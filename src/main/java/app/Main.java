@@ -23,7 +23,7 @@ public class Main {
         // Play
         if (rules != null) {
             try {
-                GameGame.play(rules);
+                Game.play(rules);
             } catch (Exception e) {
                 System.out.println("Error: " + e);
             }

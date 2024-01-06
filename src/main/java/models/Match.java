@@ -1,9 +1,12 @@
 package models;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import gameLogic.Rules;
+import models.playerAttributes.PlayerStatus;
+import models.playerAttributes.Position;
 import org.jetbrains.annotations.NotNull;
 
 public class Match {
@@ -92,16 +95,13 @@ public class Match {
 
     //#region private Methods
     private void calculatePoints(@NotNull FantaTeam team) {
-        if (team.getName() == this.homeTeam.getName()) {
+        if (Objects.equals(team.getName(), this.homeTeam.getName())) {
             for (Goalkeeper goalkeeper : this.homeTeam.getGoalkeepers()) {
                 if (goalkeeper.getPosition() == Position.GK && goalkeeper.getStatus() == PlayerStatus.FIRST_TEAM && goalkeeper.getGrade() != 0)
                     this.homeTeamPoints += goalkeeper.calculateFantaPoints();
                 else if (goalkeeper.getStatus() == PlayerStatus.BENCH) this.homeTeamPoints += goalkeeper.calculateFantaPoints();
             }
 
-            calculatePointsPerPosition(Position.DF, team);
-            calculatePointsPerPosition(Position.MF, team);
-            calculatePointsPerPosition(Position.FW, team);
         } else {
             for (Goalkeeper goalkeeper : this.awayTeam.getGoalkeepers()) {
                 if (goalkeeper.getPosition() == Position.GK && goalkeeper.getStatus() == PlayerStatus.FIRST_TEAM && goalkeeper.getGrade() != 0)
@@ -109,10 +109,10 @@ public class Match {
                 else if (goalkeeper.getStatus() == PlayerStatus.BENCH) this.awayTeamPoints += goalkeeper.calculateFantaPoints();
             }
 
-            calculatePointsPerPosition(Position.DF, team);
-            calculatePointsPerPosition(Position.MF, team);
-            calculatePointsPerPosition(Position.FW, team);
         }
+        calculatePointsPerPosition(Position.DF, team);
+        calculatePointsPerPosition(Position.MF, team);
+        calculatePointsPerPosition(Position.FW, team);
     }
 
     private void calculateGoals(@NotNull FantaTeam team, Rules rules) {
