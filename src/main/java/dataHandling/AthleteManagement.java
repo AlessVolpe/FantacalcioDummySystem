@@ -31,4 +31,8 @@ public class AthleteManagement {
         }
         return outputMap;
     }
+
+    public static void athletesToDB(@NotNull Map<Integer, Triplet<String, String, String>> unpackedAthletes) {
+        return;
+    }
 }
