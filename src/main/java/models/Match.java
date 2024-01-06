@@ -128,33 +128,33 @@ public class Match {
     }
 
     private void calculatePointsPerPosition(Position position, @NotNull FantaTeam team) {
-        List<Player> playersPerPosition = team
+        List<Athlete> playersPerPosition = team
                 .getPlayers()
                 .stream()
-                .filter(player -> player.getPosition() == position && player.getStatus() == PlayerStatus.FIRST_TEAM)
+                .filter(athlete -> athlete.getPosition() == position && athlete.getStatus() == PlayerStatus.FIRST_TEAM)
                 .collect(Collectors.toList());
 
-        for (Player player : playersPerPosition) {
-            if (this.homeTeam.getPlayers().contains(player)) {
-                this.homeTeamPoints += player.calculateFantaPoints();
+        for (Athlete athlete : playersPerPosition) {
+            if (this.homeTeam.getPlayers().contains(athlete)) {
+                this.homeTeamPoints += athlete.calculateFantaPoints();
             } else {
-                this.awayTeamPoints += player.calculateFantaPoints();
+                this.awayTeamPoints += athlete.calculateFantaPoints();
             }
         }
 
         calculateSubsPoints(playersPerPosition, position, team);
     }
 
-    private void calculateSubsPoints(List<Player> playersPerPosition, Position position, @NotNull FantaTeam team) {
+    private void calculateSubsPoints(List<Athlete> playersPerPosition, Position position, @NotNull FantaTeam team) {
         String[] module = team.getModule().split("-");
 
         if (Objects.equals(team.getName(), this.homeTeam.getName()) &&
-                (playersPerPosition.stream().anyMatch(player -> player.getGrade() == 0)
+                (playersPerPosition.stream().anyMatch(athlete -> athlete.getGrade() == 0)
                         || playersPerPosition.size() < Integer.parseInt(module[0]))) {
             this.homeTeamPoints += team
                     .getPlayers()
                     .stream()
-                    .filter(player -> player.getStatus() == PlayerStatus.BENCH && player.getPosition() == position)
+                    .filter(athlete -> athlete.getStatus() == PlayerStatus.BENCH && athlete.getPosition() == position)
                     .findFirst()
                     .get()
                     .calculateFantaPoints();
@@ -162,7 +162,7 @@ public class Match {
             this.awayTeamPoints += team
                     .getPlayers()
                     .stream()
-                    .filter(player -> player.getStatus() == PlayerStatus.BENCH && player.getPosition() == position)
+                    .filter(athlete -> athlete.getStatus() == PlayerStatus.BENCH && athlete.getPosition() == position)
                     .findFirst()
                     .get()
                     .calculateFantaPoints();

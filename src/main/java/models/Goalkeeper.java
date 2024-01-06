@@ -4,7 +4,7 @@ import gameLogic.Rules;
 import models.playerAttributes.Position;
 import org.jetbrains.annotations.NotNull;
 
-public class Goalkeeper extends Player {
+public class Goalkeeper extends Athlete {
     //#region properties
     private int goalsAgainst;
     public int getGoalsAgainst() {
@@ -35,7 +35,7 @@ public class Goalkeeper extends Player {
     @Override
     public int calculateFantaPoints() {
         Rules rules = new Rules();
-        this.calculateFantaPoints();
+        super.calculateFantaPoints();
 
         // Clean sheet
         if (this.goalsAgainst == 0) this.setFantaPoints(this.getFantaPoints() + rules.getPointsPerCleanSheet());

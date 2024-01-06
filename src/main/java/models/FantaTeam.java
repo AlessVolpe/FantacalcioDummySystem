@@ -41,9 +41,9 @@ public class FantaTeam {
         return goalkeepers;
     }
 
-    private LinkedList<Player> players;
-    public LinkedList<Player> getPlayers() {
-        return players;
+    private LinkedList<Athlete> athletes;
+    public LinkedList<Athlete> getPlayers() {
+        return athletes;
     }
     //#endregion
 
@@ -51,32 +51,32 @@ public class FantaTeam {
     public FantaTeam(String name, String fantaManager) {
         this.name = name;
         this.fantaManager = fantaManager;
-        this.players = new LinkedList<>();
+        this.athletes = new LinkedList<>();
         this.goalkeepers = new LinkedList<>();
     }
     //#endregion
 
     //#region methods
-    public void addPlayer(Player player) {
-        if (player.getClass() == Goalkeeper.class) {
-            addGoalkeeper((Goalkeeper) player); // If it doesn't work find the GK object with the same id
+    public void addPlayer(Athlete athlete) {
+        if (athlete.getClass() == Goalkeeper.class) {
+            addGoalkeeper((Goalkeeper) athlete); // If it doesn't work find the GK object with the same id
             return;
         }
 
-        if (players == null) {
-            players = new LinkedList<>();
+        if (athletes == null) {
+            athletes = new LinkedList<>();
         }
-        players.add(player);
+        athletes.add(athlete);
     }
 
-    public void removePlayer(Player player) {
-        if (player.getClass() == Goalkeeper.class) {
-            removeGoalkeeper((Goalkeeper) player); // If it doesn't work find the GK object with the same id
+    public void removePlayer(Athlete athlete) {
+        if (athlete.getClass() == Goalkeeper.class) {
+            removeGoalkeeper((Goalkeeper) athlete); // If it doesn't work find the GK object with the same id
             return;
         }
 
-        if (players != null) {
-            players.remove(player);
+        if (athletes != null) {
+            athletes.remove(athlete);
         }
     }
 
