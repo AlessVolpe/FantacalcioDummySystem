@@ -116,14 +116,14 @@ public class Match {
     }
 
     private void calculateGoals(@NotNull FantaTeam team, Rules rules) {
-        if (team.getName() == this.homeTeam.getName()) {
+        if (Objects.equals(team.getName(), this.homeTeam.getName())) {
             if (this.homeTeamPoints < rules.getMinPointsForGoal()) this.homeTeamGoals = 0;
             else if (this.homeTeamPoints == rules.getMinPointsForGoal()) this.homeTeamGoals = 1;
-            else this.homeTeamGoals = 1 + (Math.round((this.homeTeamPoints - rules.getMinPointsForGoal()) / rules.getGoalThreshold()));
+            else this.homeTeamGoals = 1 + (Math.round((float) (this.homeTeamPoints - rules.getMinPointsForGoal()) / rules.getGoalThreshold()));
         } else {
             if (this.homeTeamPoints < rules.getMinPointsForGoal()) this.awayTeamGoals = 0;
             else if (this.awayTeamPoints == rules.getMinPointsForGoal()) this.awayTeamGoals = 1;
-            else this.awayTeamGoals = 1 + (Math.round((this.awayTeamPoints - rules.getMinPointsForGoal()) / rules.getGoalThreshold()));
+            else this.awayTeamGoals = 1 + (Math.round((float) (this.awayTeamPoints - rules.getMinPointsForGoal()) / rules.getGoalThreshold()));
         }
     }
 
@@ -148,7 +148,7 @@ public class Match {
     private void calculateSubsPoints(List<Player> playersPerPosition, Position position, @NotNull FantaTeam team) {
         String[] module = team.getModule().split("-");
 
-        if (team.getName() == this.homeTeam.getName() &&
+        if (Objects.equals(team.getName(), this.homeTeam.getName()) &&
                 (playersPerPosition.stream().anyMatch(player -> player.getGrade() == 0)
                         || playersPerPosition.size() < Integer.parseInt(module[0]))) {
             this.homeTeamPoints += team

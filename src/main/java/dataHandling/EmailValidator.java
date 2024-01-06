@@ -34,7 +34,7 @@ public class EmailValidator {
         if (position == -1) return false;
         String hostName = emailAddress.substring(++position);
 
-        ArrayList<String> mxList = null;
+        ArrayList<String> mxList;
         try {
             mxList = DNSLookup.lookupMX(hostName);
         } catch (NamingException e) {
@@ -42,12 +42,12 @@ public class EmailValidator {
         }
 
         if (mxList.isEmpty()) return false;
-        for (int mx = 0; mx < mxList.size(); mx++) {
+        for (String s : mxList) {
             boolean valid = false;
 
             try {
                 int res;
-                Socket socket = new Socket(mxList.get(mx), 25);
+                Socket socket = new Socket(s, 25);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
@@ -74,34 +74,35 @@ public class EmailValidator {
                     reader.close();
                     writer.close();
                     socket.close();
-                    throw new Exception( "Sender rejected" );
+                    throw new Exception("Sender rejected");
                 }
 
-                DNSLookup.say(writer, "RCPT TO: <" + emailAddress + ">" );
+                DNSLookup.say(writer, "RCPT TO: <" + emailAddress + ">");
 
-                DNSLookup.say(writer, "RSET"); DNSLookup.hear(reader);
-                DNSLookup.say(writer, "QUIT"); DNSLookup.hear(reader);
+                res = DNSLookup.hear(reader);
+                DNSLookup.say(writer, "RSET");
+                DNSLookup.hear(reader);
+                DNSLookup.say(writer, "QUIT");
+                DNSLookup.hear(reader);
                 if (res != 250) {
                     reader.close();
                     writer.close();
                     socket.close();
-                    throw new Exception( "Address is not valid!" );
+                    throw new Exception("Address is not valid!");
                 }
 
                 valid = true;
                 reader.close();
                 writer.close();
                 socket.close();
-            } catch (Exception e) {
-
-            } finally {
-                if (valid) return true;
+            } catch (Exception ignored) {
             }
+            if (valid) return true;
         }
         return false;
     }
 
-    class DNSLookup {
+    static class DNSLookup {
         static int hear(BufferedReader reader) throws IOException {
             String line;
             int res = 0;
@@ -125,7 +126,7 @@ public class EmailValidator {
         }
 
         static ArrayList<String> lookupMX(String hostName) throws NamingException {
-            Hashtable<String, String> env = new Hashtable<String, String>();
+            Hashtable<String, String> env = new Hashtable<>();
             env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
 
             DirContext ictx = new javax.naming.directory.InitialDirContext(env);
@@ -139,7 +140,7 @@ public class EmailValidator {
                     throw new NamingException("No match for name '" + hostName + "'");
             }
 
-            ArrayList<String> res = new ArrayList<String>();
+            ArrayList<String> res = new ArrayList<>();
             NamingEnumeration<?> en = attr.getAll();
             while (en.hasMore()) {
                 String x = (String) en.next();

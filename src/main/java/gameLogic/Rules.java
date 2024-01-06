@@ -92,7 +92,7 @@ public class Rules {
     //#endregion
 
     //#region configuration
-    private ArrayList<String> modules = new ArrayList<String>();
+    private ArrayList<String> modules = new ArrayList<>();
     public ArrayList<String> getModules() {
         return modules;
     }
@@ -213,7 +213,7 @@ public class Rules {
                 int threshold = scanner.nextInt();
 
                 System.out.println("As a proof of concept, we'll provide a list of modules.");
-                ArrayList<String> modules = new ArrayList<String> (Arrays.asList("4-4-2", "3-5-2", "4-3-3", "3-4-3", "5-3-2", "4-5-1", "5-4-1"));
+                ArrayList<String> modules = new ArrayList<>(Arrays.asList("4-4-2", "3-5-2", "4-3-3", "3-4-3", "5-3-2", "4-5-1", "5-4-1"));
 
                 rules = new Rules(goals, assists, yellow, red, clean, goalAgainst, ownGoal, penalty, saved, minutes, points, threshold, modules);
                 break;

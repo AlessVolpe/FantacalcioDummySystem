@@ -51,27 +51,27 @@ public class FantaTeam {
     public FantaTeam(String name, String fantaManager) {
         this.name = name;
         this.fantaManager = fantaManager;
-        this.players = new LinkedList<Player>();
-        this.goalkeepers = new LinkedList<Goalkeeper>();
+        this.players = new LinkedList<>();
+        this.goalkeepers = new LinkedList<>();
     }
     //#endregion
 
     //#region methods
     public void addPlayer(Player player) {
         if (player.getClass() == Goalkeeper.class) {
-            addGoalkeeper((Goalkeeper) player); // If doesn't work find the GK object with the same id
+            addGoalkeeper((Goalkeeper) player); // If it doesn't work find the GK object with the same id
             return;
         }
 
         if (players == null) {
-            players = new LinkedList<Player>();
+            players = new LinkedList<>();
         }
         players.add(player);
     }
 
     public void removePlayer(Player player) {
         if (player.getClass() == Goalkeeper.class) {
-            removeGoalkeeper((Goalkeeper) player); // If doesn't work find the GK object with the same id
+            removeGoalkeeper((Goalkeeper) player); // If it doesn't work find the GK object with the same id
             return;
         }
 
@@ -82,7 +82,7 @@ public class FantaTeam {
 
     private void addGoalkeeper(Goalkeeper goalkeeper) {
         if (goalkeepers == null) {
-            goalkeepers = new LinkedList<Goalkeeper>();
+            goalkeepers = new LinkedList<>();
         }
         goalkeepers.add(goalkeeper);
     }

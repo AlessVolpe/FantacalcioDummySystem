@@ -162,9 +162,10 @@ public class Player {
     }
 
     public void removeFromFantaTeam() {
+        String fantaTeamName = fantaTeam.getName();
         this.fantaTeam.removePlayer(this);
         this.fantaTeam = null;
-        System.out.println(this.name + " removed from " + fantaTeam.getName());
+        System.out.println(this.name + " removed from " + fantaTeamName);
     }
 
     public int calculateFantaPoints() {
@@ -181,7 +182,7 @@ public class Player {
         if (this.penaltyScored > 0) this.fantaPoints += rules.getPointsPerPenalty() * this.penaltyScored;
 
         // Malus
-        if (this.yellowCard) this.fantaPoints -= rules.getPointsPerYellowCard();
+        if (this.yellowCard) this.fantaPoints -= (int) rules.getPointsPerYellowCard();
         if (this.redCard) this.fantaPoints -= rules.getPointsPerRedCard();
         if (this.penaltyMissed > 0) this.fantaPoints -= rules.getPointsPerPenalty() * this.penaltyMissed;
         if (this.ownGoals > 0) this.fantaPoints -= rules.getPointsPerOwnGoal() * this.ownGoals;

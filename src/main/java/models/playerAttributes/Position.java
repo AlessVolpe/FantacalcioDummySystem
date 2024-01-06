@@ -9,7 +9,6 @@ public enum Position {
             case DF -> "Defender";
             case MF -> "Midfielder";
             case FW -> "Forward";
-            default -> null;
         };
     }
 }

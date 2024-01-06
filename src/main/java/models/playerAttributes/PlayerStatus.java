@@ -8,7 +8,6 @@ public enum PlayerStatus {
             case FIRST_TEAM -> "First Team";
             case BENCH -> "Bench";
             case STANDS -> "Stands";
-            default -> null;
         };
     }
 }
