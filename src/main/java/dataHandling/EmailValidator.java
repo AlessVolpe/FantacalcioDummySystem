@@ -38,6 +38,7 @@ public class EmailValidator {
         try {
             mxList = DNSLookup.lookupMX(hostName);
         } catch (NamingException e) {
+            System.err.println(e.getMessage());
             return false;
         }
 

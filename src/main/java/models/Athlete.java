@@ -155,7 +155,7 @@ public class Athlete {
     //#endregion
 
     //#region methods
-    public void addToFantaTeam(FantaTeam fantaTeam) {
+    public void addToFantaTeam(@NotNull FantaTeam fantaTeam) {
         this.fantaTeam = fantaTeam;
         fantaTeam.addPlayer(this);
         System.out.println(this.name + " added to " + fantaTeam.getName());

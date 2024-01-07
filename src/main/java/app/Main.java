@@ -16,8 +16,7 @@ public class Main {
         try {
             PlayerManagement.addPlayers(scanner);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error: " + e);
+            System.err.println(e.getMessage());
         }
 
         // Play
@@ -25,7 +24,7 @@ public class Main {
             try {
                 Game.play(rules);
             } catch (Exception e) {
-                System.out.println("Error: " + e);
+                System.err.println(e.getMessage());
             }
         }
         scanner.close();
