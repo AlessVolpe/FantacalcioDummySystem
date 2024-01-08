@@ -38,7 +38,9 @@ public class databaseDriver {
     }
 
     private static boolean doesTableExists(@NotNull Connection connection, String tableName) throws SQLException {
-        ResultSet resultSet = connection.getMetaData().getTables(null, null, tableName,new String[] {"TABLE"});
-        return resultSet.next();
+        return connection
+                    .getMetaData()
+                    .getTables(null, null, tableName,new String[] {"TABLE"})
+                    .next();
     }
 }
