@@ -14,6 +14,9 @@ public class FantaManager {
         return name;
     }
 
+    private String password;
+    public String getPassword() { return password; }
+
     private String email;
     public String getEmail() {
         return email;
@@ -25,10 +28,11 @@ public class FantaManager {
     //#endregion
 
     //#region constructors
-    public FantaManager(String name, String email) {
+    public FantaManager(String name, String email, String password) {
         this.id = IDGenerator.randomStringUUID();
         this.name = name;
         this.email = email;
+        this.password = password;
     }
     //#endregion
 

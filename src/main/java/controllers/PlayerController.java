@@ -1,39 +1,43 @@
 package controllers;
 
-import java.io.IOException;
-import java.util.Scanner;
-
-import gameLogic.Game;
+import database.databaseDriver;
 import models.FantaManager;
-import terminalToolkit.CLS;
-import dataHandling.EmailValidator;
+import org.jetbrains.annotations.NotNull;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+@SuppressWarnings("SqlSourceToSinkFlow")
 public class PlayerController {
-    public static void addPlayers(Scanner scanner) throws InterruptedException, IOException {
-        System.out.println("How many players do you want to play with?");
-        int i = 0,
-                managers = scanner.nextInt();
-        scanner.nextLine(); // eats the \n character
+    private static void createPlayersTable(String connectionString) throws SQLException {
+        Connection connection = DriverManager.getConnection(connectionString);
+        if (!databaseDriver.doesTableExists(connection, "team")) {
+            connection.close();
+            throw new SQLException("Related table TEAM does not exist");
+        }
+        String[] columns = new String[]{
+                "player_ID INTEGER AUTOINCREMENT",
+                "player_name CHAR(50) NOT NULL",
+                "player_email CHAR(100) NOT NULL",
+                "player_password CHAR(255) NOT NULL",
+                "player_fantateamID INT"};
+        String[] constraints = new String[]{"PRIMARY KEY (player_ID), FOREIGN KEY (player_fantateam) REFERENCES TEAM (team_ID)"};
+        database.databaseDriver.createTable(connectionString, "athlete", columns, constraints);
+    }
 
-        while (i < managers) {
-            System.out.println("Enter player name: ");
-            String name = scanner.nextLine();
-            System.out.println("Enter player email: ");
-            String email = scanner.nextLine();
+    public static void addPlayerToDb(String connectionString, @NotNull FantaManager manager) {
+        StringBuilder sql = new StringBuilder("INSERT INTO PLAYER (player_name, player_email, player_password) VALUES (");
 
-            while (!(EmailValidator.emailPatternMatches(email) || EmailValidator.emailDNSLookup(email))) {
-                System.out.println("Invalid email!");
-                CLS.clearScreen();
-                System.out.println("Enter a valid player email: ");
-                email = scanner.nextLine();
-            }
-
-            FantaManager manager = new FantaManager(name, email);
-            Game.addManager(manager);
-
-            System.out.println("Manager " + name + " added!");
-            CLS.clearScreen();
-            i++;
+        try (Connection connection = DriverManager.getConnection(connectionString);
+             Statement statement = connection.createStatement()) {
+            createPlayersTable(connectionString);
+            if (!databaseDriver.isTableEmpty(statement, "player")) throw new SQLException("PLAYER table isn't empty");
+            sql.append(manager.getName()).append(", ").append(manager.getEmail()).append(", ").append(manager.getPassword()).append(");");
+            statement.executeUpdate(sql.toString());
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
     }
 }

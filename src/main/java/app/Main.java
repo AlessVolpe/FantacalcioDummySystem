@@ -19,7 +19,7 @@ public class Main {
         Rules rules = Rules.setRules(choice, scanner);
 
         try {
-            PlayerController.addPlayers(scanner);
+            StartSequence.addPlayers(scanner);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }

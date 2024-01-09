@@ -5,15 +5,27 @@ import org.apache.commons.lang.StringUtils;
 import org.javatuples.Triplet;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import java.util.Map;
 
 public class AthleteController {
     private static void createAthletesTable(String connectionString) throws SQLException {
         Connection connection = DriverManager.getConnection(connectionString);
-        if (!databaseDriver.doesTableExists(connection, "team")) throw new SQLException("Related table TEAM does not exist");
-        String[] columns = new String[] {"athlete_ID", "athlete_position", "athlete_name", "athlete_team", "athlete_fantateamID"};
-        String[] constraints = new String[] {"PRIMARY KEY (athlete_ID), FOREIGN KEY (athlete_fantateam) REFERENCES TEAM (team_ID) "};
+        if (!databaseDriver.doesTableExists(connection, "team")) {
+            connection.close();
+            throw new SQLException("Related table TEAM does not exist");
+        }
+        String[] columns = new String[] {
+                "athlete_ID INT NOT NULL",
+                "athlete_position CHAR(1) NOT NULL",
+                "athlete_name CHAR(25) NOT NULL",
+                "athlete_team CHAR(50) NOT NULL",
+                "athlete_fantateamID INT"};
+        String[] constraints = new String[] {"PRIMARY KEY (athlete_ID), FOREIGN KEY (athlete_fantateam) REFERENCES TEAM (team_ID)"};
         database.databaseDriver.createTable(connectionString, "athlete", columns, constraints);
     }
 
