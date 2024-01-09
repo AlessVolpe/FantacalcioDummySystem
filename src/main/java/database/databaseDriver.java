@@ -4,10 +4,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 
+@SuppressWarnings("SqlSourceToSinkFlow") // Bad practice, but it's safe because table creation doesn't require user input at the moment
 public class databaseDriver {
-    @SuppressWarnings("SqlSourceToSinkFlow") // Bad practice, but it's safe because table creation doesn't require user input at the moment
-    public static void createTable(String connnectionString, String tableName, String[] columns, String[] constraints) {
-        try(Connection connection = DriverManager.getConnection(connnectionString);
+    public static void createTable(String connectionString, String tableName, String[] columns, String[] constraints) {
+        try(Connection connection = DriverManager.getConnection(connectionString);
             Statement statement = connection.createStatement()) {
             if (doesTableExists(connection, tableName)) {
                 throw new SQLException("Table already exists");
@@ -37,10 +37,15 @@ public class databaseDriver {
         }
     }
 
-    private static boolean doesTableExists(@NotNull Connection connection, String tableName) throws SQLException {
+    public static boolean isTableEmpty(@NotNull Statement statement, @NotNull String tableName) throws SQLException {
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM " + tableName.toUpperCase());
+        return !resultSet.next();
+    }
+
+    public static boolean doesTableExists(@NotNull Connection connection, String tableName) throws SQLException {
         return connection
                     .getMetaData()
-                    .getTables(null, null, tableName,new String[] {"TABLE"})
+                    .getTables(null, null, tableName.toUpperCase(),new String[] {"TABLE"})
                     .next();
     }
 }

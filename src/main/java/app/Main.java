@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
+import controllers.PlayerController;
 import gameLogic.*;
 
 public class Main {
@@ -18,7 +19,7 @@ public class Main {
         Rules rules = Rules.setRules(choice, scanner);
 
         try {
-            PlayerManagement.addPlayers(scanner);
+            PlayerController.addPlayers(scanner);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
