@@ -18,7 +18,6 @@ public class AthleteController {
     }
 
     public static void addAthletesToDb(String connectionString, @NotNull Map<Integer, Triplet<String, String, String>> extractedPlayers) {
-        int i = 0;
         StringBuilder query = new StringBuilder("INSERT INTO ATHLETE (athlete_id, athlete_position, athlete_name, athlete_team) VALUES (");
 
         try (Connection connection = DriverManager.getConnection(connectionString);

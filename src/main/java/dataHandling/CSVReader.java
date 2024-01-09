@@ -16,7 +16,7 @@ public class CSVReader {
         HashMap<Integer, Triplet<String, String, String>> outputMap = new HashMap<>();
 
         try(BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String headerLine = reader.readLine(); // eats the header line that labels the records
+            reader.readLine(); // eats the header line that labels the records
             while ((line = reader.readLine()) != null) {
                 String[] keyValuePair = line.split(",", 4);
 
