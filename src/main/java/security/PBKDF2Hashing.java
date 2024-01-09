@@ -28,7 +28,7 @@ public final class PBKDF2Hashing {
     }
 
     public PBKDF2Hashing(int cost) {
-        iterations(cost)
+        final int iterations = iterations(cost);
         this.cost = cost;
         this.random = new SecureRandom();
     }
