@@ -1,5 +1,5 @@
 # Fantacalcio Dummy System
-## _The game that took Italy by the heel revolutionized_
+### _The game that took Italy by the heel revolutionized_
 
 [![Java 21 CI with Maven](https://github.com/Syro98/FantacalcioDummySystem/actions/workflows/maven.yml/badge.svg)](https://github.com/Syro98/FantacalcioDummySystem/actions/workflows/maven.yml)
 
