@@ -18,5 +18,15 @@ in which matches are played come into play.
 - [Apache Maven](https://maven.apache.org/) - Probably one of the most used Java project management tools
 - [SQLite](https://www.sqlite.org) - Lightweight but fully-featured SQL database engine
 
-## Features
-WIP
+## Roadmap
+A simple road map of the functionalities that will be implemented.
+
+### Currently working on
+    - Backend application
+      - Business logic
+      - Database integration
+
+### Thinking about
+    - Leaderboard system
+    - Statistical analysis
+    - Web-client
