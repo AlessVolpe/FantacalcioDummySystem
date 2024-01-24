@@ -1,5 +1,5 @@
 # Fantacalcio Dummy System
-### _The game that took Italy by the heel revolutionized_
+### _The game that took Italy by the heel, revolutionized_
 
 [![Java 21 CI with Maven](https://github.com/Syro98/FantacalcioDummySystem/actions/workflows/maven.yml/badge.svg)](https://github.com/Syro98/FantacalcioDummySystem/actions/workflows/maven.yml)
 
@@ -14,12 +14,13 @@ statistical analysis system to understand really how much luck and the sequence
 in which matches are played come into play.
 
 ## Technologies
+N.B.: The stack will be updated accordingly with the development of the application
 - [Java 21](https://www.java.com/) - Powerful and omnipresent object-oriented programming language
 - [Apache Maven](https://maven.apache.org/) - Probably one of the most used Java project management tools
 - [SQLite](https://www.sqlite.org) - Lightweight but fully-featured SQL database engine
 
 ## Roadmap
-A simple road map of the functionalities that will be implemented.
+A simple road map of the functionalities that will be implemented. 
 
 ### Currently working on
     - Backend application
