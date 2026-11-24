@@ -1,6 +1,8 @@
 # ADR 0003: Persistence and immutable revisions
 
-**Status:** Accepted principles; database choice proposed.
+**Status:** Accepted principles; PostgreSQL confirmed by
+[ADR 0006](0006-backend-stack.md). The historical proposal below records the
+original context; detailed persistence invariants remain applicable.
 
 ## Context
 
