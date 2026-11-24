@@ -11,6 +11,15 @@ authors = [
 requires-python = ">=3.13"
 dependencies = []
 
+[dependency-groups]
+dev = [
+    "ruff>=0.11,<1",
+    "mypy>=1.15,<3",
+    "pytest>=8.3,<10",
+    "pytest-cov>=6,<8",
+    "pre-commit>=4.2,<5",
+]
+
 [project.urls]
 Homepage = "https://github.com/AlessVolpe/FantacalcioDummySystem"
 Repository = "https://github.com/AlessVolpe/FantacalcioDummySystem"
@@ -22,3 +31,36 @@ fantacalciodummysystem = "fantacalciodummysystem:main"
 [build-system]
 requires = ["uv_build>=0.13.9,<0.14.0"]
 build-backend = "uv_build"
+
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.13"
+files = ["src", "tests"]
+strict = true
+warn_unreachable = true
+show_error_codes = true
+
+[tool.pytest.ini_options]
+minversion = "8.3"
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-config", "--strict-markers", "--import-mode=importlib"]
+
+[tool.coverage.run]
+branch = true
+source = ["fantacalciodummysystem"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
