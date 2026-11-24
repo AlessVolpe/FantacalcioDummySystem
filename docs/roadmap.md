@@ -51,12 +51,12 @@ See the [changelog](../CHANGELOG.md) for the foundation release record.
 
 ## 0.2.0: Backend foundations
 
-**Status:** in progress; architecture selected, implementation pending.
+**Status:** in progress; architecture selected; Django initialization introduced.
 
 | PR (milestone sequence) | Deliverable | Acceptance criteria |
 | --- | --- | --- |
 | 1 | Architecture | ADRs 0006–0008 reviewed and merged |
-| 2 | Django initialization | Django 5.2 LTS, settings, management commands, custom email/UUID user model and initial migration; no default user migration before the custom model |
+| 2 | Django initialization | Django 5.2 LTS, settings, management commands, custom email/UUID user model and initial migration; database-free checks; real PostgreSQL migration verification in PR 3 |
 | 3 | Persistence | PostgreSQL Compose, host uv workflow, migration and real database tests; CI and reusable release workflows provision PostgreSQL on supported runners |
 | 4 | Authentication | Public registration, verification, recovery, login/logout, session and CSRF checks, access controls and abuse protection |
 | 5 | API foundations | Versioned REST resources, OpenAPI, consistent errors, bounded pagination, health checks and explicit permissions |

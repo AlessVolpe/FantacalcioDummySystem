@@ -15,6 +15,7 @@ Supersede accepted decisions with linked records when changing them.
 | [0006](0006-backend-stack.md) | Backend technology, PostgreSQL and Django upgrade policy | Accepted; implementation pending |
 | [0007](0007-identity-and-authentication.md) | Custom identity, public registration and session authentication | Accepted; implementation pending |
 | [0008](0008-rest-api.md) | RESTful API, OpenAPI and same-origin routing | Accepted; implementation pending |
+| [0009](0009-secrets-and-database-access.md) | Secret isolation and PostgreSQL role separation | Accepted; provisioning and deployment verification pending |
 
 Acceptance refers to the architectural direction established during project
 planning. Unresolved decisions are explicitly marked and should not be treated

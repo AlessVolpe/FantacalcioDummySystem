@@ -35,7 +35,7 @@
 
 ---
 
-**Current development status:** the Python application is at its initial scaffolding stage. The native engine is developed independently in [Central Ranking Dogma](https://github.com/AlessVolpe/CentralRankingDogma). The original Java implementation is preserved in [FantacalcioDummySystem-Deprecated](https://github.com/AlessVolpe/FantacalcioDummySystem-Deprecated). The architecture and application capabilities described below represent the intended direction of the rewrite, not an already operational web service.
+**Current development status:** the Django backend is initialized; database infrastructure and public features remain in development. The native engine is developed independently in [Central Ranking Dogma](https://github.com/AlessVolpe/CentralRankingDogma). The original Java implementation is preserved in [FantacalcioDummySystem-Deprecated](https://github.com/AlessVolpe/FantacalcioDummySystem-Deprecated). The architecture and application capabilities described below represent the intended direction of the rewrite, not an already operational web service.
 
 ## The vision
 
@@ -83,7 +83,7 @@ flowchart TB
     CLI --> CRD
 ```
 
-The diagram describes the **planned application architecture**. The native `crd-json` adapter is already implemented upstream; the Django, React and background-processing layers are not yet implemented in this repository.
+The diagram describes the **planned application architecture**. The native `crd-json` adapter is already implemented upstream; Django initialization is present, while the REST API, React and background-processing layers remain planned.
 
 | Component | Responsibility | Repository |
 | --- | --- | --- |
@@ -101,9 +101,9 @@ Explore the [application architecture](docs/architecture/system.md), [logical mo
 | --- | --- | --- |
 | Python runtime | [Python](https://www.python.org/) | Configured |
 | Project and dependency management | [uv](https://docs.astral.sh/uv/) | Configured |
-| Web backend | [Django 5.2 LTS](https://www.djangoproject.com/) | Selected; implementation pending |
+| Web backend | [Django 5.2 LTS](https://www.djangoproject.com/) | Initialized |
 | REST API | [Django REST Framework](https://www.django-rest-framework.org/), OpenAPI | Selected; implementation pending |
-| Persistence | [PostgreSQL](https://www.postgresql.org/) | Selected; implementation pending |
+| Persistence | [PostgreSQL](https://www.postgresql.org/) | Settings and driver configured; provisioning pending |
 | Browser authentication | Django sessions, CSRF protection | Selected; implementation pending |
 | Web frontend | [React](https://react.dev/) and [TypeScript](https://www.typescriptlang.org/) | Planned |
 | Background processing | [Celery](https://docs.celeryq.dev/) | Planned |
@@ -112,7 +112,7 @@ Explore the [application architecture](docs/architecture/system.md), [logical mo
 
 ## Development status
 
-The repository foundations milestone is complete at version 0.1.1. The current implementation milestone is 0.2.0 (Backend foundations). The application is still a scaffold; this baseline is not a functional web service.
+The repository foundations milestone is complete at version 0.1.1. The current implementation milestone is 0.2.0 (Backend foundations). The Django project is initialized, but this baseline is not a functional research web service.
 
 - [x] Establish the separate Python repository and `uv` project scaffold.
 - [x] Preserve the previous Java implementation in a separate repository.
@@ -122,6 +122,8 @@ The repository foundations milestone is complete at version 0.1.1. The current i
 - [x] Enable required repository rules after successful workflow runs.
 - [x] Document the target architecture, logical module boundaries and decision records.
 - [x] Select backend technologies, identity and REST API conventions.
+- [x] Initialize Django and the custom user model with its initial migration.
+- [ ] Provision PostgreSQL and verify migrations against a real database.
 - [ ] Finalize implementation-level data models and API contracts.
 - [ ] Implement competition management, authentication and historical data import.
 - [ ] Integrate `crd-json` and background experiment execution.
@@ -132,16 +134,17 @@ See the [documentation index](docs/index.md), [backend foundations](docs/archite
 
 ### Quick start
 
-The repository currently contains a minimal installable Python project, not a functional web application. With `uv` installed:
+The installable Python package includes the initialized Django project. With `uv` installed:
 
 ```sh
 git clone https://github.com/AlessVolpe/FantacalcioDummySystem.git
 cd FantacalcioDummySystem
 uv sync --locked
 uv run --locked fantacalciodummysystem
+uv run --locked python manage.py check --settings=fantacalciodummysystem.config.settings.static
 ```
 
-The entry point currently prints `Hello from fantacalciodummysystem!`. No web server, database or simulation integration is started by this command.
+The legacy entry point still prints `Hello from fantacalciodummysystem!`. The static Django system check needs no database or credentials. For database-backed commands, follow the [private local PostgreSQL setup](docs/local-postgresql.md). See [Django initialization](docs/architecture/backend.md#django-initialization) for the settings, identity policy and verification commands.
 
 For formatting, linting, static typing, tests, coverage and local Git hooks, see the [local quality checks](CONTRIBUTING.md#local-quality-checks) and
 [continuous integration](CONTRIBUTING.md#continuous-integration).

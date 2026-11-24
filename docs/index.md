@@ -6,7 +6,8 @@ application reference; the native mathematical and algorithmic contracts remain
 in [Central Ranking Dogma (CRD)](https://github.com/AlessVolpe/CentralRankingDogma/blob/master/docs/index.md).
 
 **Status:** repository foundations complete (0.1.1); backend foundations (0.2.0)
-are in progress. The web application is not yet implemented. The diagrams and
+are in progress. Django initialization is present; public application features
+and database provisioning remain pending. The diagrams and
 module names below describe the target design, not an inventory of existing
 Python modules.
 

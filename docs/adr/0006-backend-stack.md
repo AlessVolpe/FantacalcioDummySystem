@@ -16,9 +16,11 @@ must establish a testable platform before competition models are introduced.
 - Use PostgreSQL in local development, database integration tests and production;
   SQLite is not a supported substitute. Start with PostgreSQL 18 and Psycopg 3
   as the implementation targets, subject to compatibility verification.
-- Run PostgreSQL in Docker Compose locally; run Python on the host using uv.
-  CI provisions an isolated PostgreSQL instance for database tests on each
-  supported runner, not necessarily using the same provisioning mechanism.
+- Support native PostgreSQL and Docker Compose equally for local development;
+  run Python on the host using uv. CI provisions an isolated PostgreSQL instance
+  for database tests on each supported runner, not necessarily using the same
+  mechanism. See [ADR 0009](0009-secrets-and-database-access.md) for secret
+  injection and role separation.
 - Use versioned migrations, timezone-aware UTC timestamps and transactions.
   Development and test settings must never point at production databases.
 - Keep Django settings and application modules in the existing package. Do not

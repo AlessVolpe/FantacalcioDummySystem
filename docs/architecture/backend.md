@@ -1,10 +1,13 @@
 # Backend foundations
 
-**Status:** selected architecture for 0.2.0; not yet implemented.
+**Status:** Django initialization and secret isolation in 0.2.0. Local
+PostgreSQL setup is documented; real-database CI, public authentication and
+REST endpoints remain pending.
 
 See [ADR 0006](../adr/0006-backend-stack.md),
-[ADR 0007](../adr/0007-identity-and-authentication.md) and
-[ADR 0008](../adr/0008-rest-api.md) for decisions and their rationale.
+[ADR 0007](../adr/0007-identity-and-authentication.md),
+[ADR 0008](../adr/0008-rest-api.md) and
+[ADR 0009](../adr/0009-secrets-and-database-access.md) for decisions and their rationale.
 
 ## Target package layout
 
@@ -13,9 +16,11 @@ src/fantacalciodummysystem/
     __init__.py
     config/
         settings/
+            environment.py
             base.py
             development.py
             testing.py
+            static.py
             production.py
         urls.py
         asgi.py
@@ -23,6 +28,7 @@ src/fantacalciodummysystem/
     accounts/
         models.py
         managers.py
+        backends.py
         admin.py
         migrations/
     api/
@@ -31,7 +37,12 @@ src/fantacalciodummysystem/
         urls.py
 manage.py
 compose.yaml
-.env.example
+examples/
+    .env.development.example
+    .env.testing.example
+    .env.postgres.example
+pre-commit/
+    .pre-commit-config.yaml
 tests/
     accounts/
     api/
@@ -47,6 +58,74 @@ Do not load real credentials from checked-in examples. Development and testing
 can use explicitly isolated local configuration. Store timestamps in UTC and
 use Django's timezone-aware APIs.
 
+## Django initialization
+
+The existing `src` package contains the project configuration and `accounts`
+application. The original scaffold command remains available. `manage.py`
+defaults to development settings; ASGI and WSGI entry points default to
+production settings unless `DJANGO_SETTINGS_MODULE` is explicitly set.
+
+- `base`: shared application, session, middleware, UTC and password settings.
+- `development`: private signing key, mandatory isolated database settings,
+  loopback database host and console email.
+- `testing`: mandatory separate database settings, random process-local
+  signing key, memory email backend, no debug mode.
+- `static`: database-free unit tests and mypy; dummy database backend and random
+  process-local signing key. Not a serving or persistence profile.
+- `production`: requires `FDS_SECRET_KEY`, `FDS_ALLOWED_HOSTS` and all database
+  variables; secure cookies and HTTPS redirect. Configure trusted proxy headers
+  and real email delivery during deployment, not through unsafe defaults.
+
+PostgreSQL is configured through `FDS_DEV_DB_`, `FDS_TEST_DB_` or `FDS_DB_`
+with suffixes `NAME`, `USER`, `PASSWORD`, `HOST` and `PORT`. All five values
+are mandatory in each database-backed profile; no authentication defaults are
+available. Development additionally requires `FDS_DEV_SECRET_KEY`. Development
+and testing allow loopback database hosts only. See the
+[local PostgreSQL setup](../local-postgresql.md) for private environment files,
+native and Compose setup, role separation and verification. The next PR adds
+real database tests and disposable CI credentials. Never use production data
+or credentials for local or CI tests.
+
+`AUTH_USER_MODEL = "accounts.User"` is set before the initial migration. The
+model uses a UUID primary key, unique canonical email, display name, verification
+timestamp, standard Django password hashing and permissions. Administrative
+activation is independent of verification. The verified-email backend rejects
+inactive and unverified users; the trusted `createsuperuser` command marks its
+administrator verified. No public registration, login, recovery, admin or REST
+routes are enabled yet. Manager creation is trusted internal code, not a
+registration serializer; password validation and email delivery belong to PR 4.
+
+The initial identity policy trims and lowercases ASCII addresses (maximum 254
+characters); internationalized domains can use their ASCII A-label form.
+Unicode local parts and whitespace inside addresses are not supported by this
+baseline. The PostgreSQL `C` collation, uniqueness and a canonical-email check
+constraint make concurrent duplicate rejection independent of locale. Do not
+rewrite provider-specific plus tags or dots. Review this scope before accepting
+real registrations. The database constraint enforces canonical storage, not
+complete email syntax validation.
+
+### Local verification
+
+```sh
+uv lock --check
+uv sync --locked
+uv run --locked python manage.py check --settings=fantacalciodummysystem.config.settings.static
+uv run --locked ruff format --check .
+uv run --locked ruff check .
+uv run --locked mypy
+uv run --locked pytest --cov --cov-report=term-missing
+```
+
+Only regenerate the lock when dependencies change; use `uv lock --check` on
+subsequent verification. The tests in this PR do not connect to a database.
+The migration is version-controlled but must be verified against PostgreSQL
+before applying it to real data. In the persistence PR, run
+`manage.py makemigrations --check --dry-run`, `manage.py migrate` and the real
+PostgreSQL tests using the documented local database. Do not initialize Django's
+built-in default user table first. CI and release quality jobs remain
+database-free until provisioning is available on both platforms; the security
+workflow also scans tracked files for secrets.
+
 ## Deployment boundary
 
 ```mermaid
@@ -58,8 +137,8 @@ flowchart LR
     D --> M["Email delivery"]
 ```
 
-For local development, PostgreSQL runs in Compose and Django runs on the host
-through uv. Bind the development database to loopback where a host port is
+For local development, PostgreSQL runs natively or in Compose and Django runs
+on the host through uv. Bind the development database to loopback where a host port is
 needed. Production uses server-only database access. The later frontend
 should use a development proxy to preserve same-origin browser semantics.
 The reverse proxy must forward only trusted HTTPS/host metadata; production

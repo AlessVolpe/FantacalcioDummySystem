@@ -17,13 +17,17 @@ Participation is subject to the [Code of Conduct](CODE_OF_CONDUCT.md).
 5. Open a pull request against `main`, describing the motivation, verification,
    limitations and any compatibility or migration implications.
 
-The application is still a scaffold, but local quality checks are configured.
+The Django project is initialized; the public application and PostgreSQL
+integration verification remains pending. See [local PostgreSQL setup](docs/local-postgresql.md)
+for native and Compose setup. Local quality checks are configured.
 GitHub Actions verifies the same checks on Linux and Windows. Avoid unrelated
 reformatting or generated files.
 
 ## Local quality checks
 
-The `dev` dependency group contains Ruff, mypy, pytest, pytest-cov and pre-commit.
+The `dev` dependency group contains Ruff, mypy, pytest, pytest-cov, pre-commit,
+pytest-django and django-stubs. See the [backend reference](docs/architecture/backend.md#django-initialization)
+for database-free checks and the pending real-database verification.
 `uv sync --locked` installs this group by default. To install only runtime
 dependencies, use `uv sync --locked --no-dev`.
 
@@ -35,6 +39,7 @@ uv sync --locked
 uv run --locked ruff format --check .
 uv run --locked ruff check .
 uv run --locked mypy
+uv run --locked python manage.py check --settings=fantacalciodummysystem.config.settings.static
 uv run --locked pytest --cov --cov-report=term-missing
 ```
 
@@ -53,16 +58,29 @@ than treating the scaffold's coverage as a meaningful quality target.
 Install optional local Git hooks once per clone:
 
 ```sh
-uv run --locked pre-commit install --hook-type pre-commit --hook-type pre-push
-uv run --locked pre-commit run --all-files
-uv run --locked pre-commit run --hook-stage pre-push --all-files
+uv run --locked pre-commit install --config pre-commit/.pre-commit-config.yaml --hook-type pre-commit --hook-type pre-push
+uv run --locked pre-commit run --config pre-commit/.pre-commit-config.yaml --all-files
+uv run --locked pre-commit run --config pre-commit/.pre-commit-config.yaml --hook-stage pre-push --all-files
 ```
 
-The pre-commit stage checks formatting, lint and types; pre-push runs tests and
-coverage. Hooks use the project's locked `uv` environment, without separate
-hook environments or automatic edits. Ensure `uv` is on PATH when Git invokes
-the hooks. Local hooks supplement required CI checks; they do not
+The pre-commit stage rejects private configuration files, scans for secrets,
+checks formatting, lint and types; pre-push runs tests and coverage. Python
+quality hooks use the project's locked `uv` environment; the pinned secret
+scanner uses its own pre-commit environment. Hooks do not edit files automatically.
+Ensure `uv` is on PATH when Git invokes the hooks. Local hooks supplement required CI checks; they do not
 replace them.
+
+Run the security hooks against all tracked files before opening a PR:
+
+```sh
+uv run --locked pre-commit run --config pre-commit/.pre-commit-config.yaml forbid-private-config --all-files
+uv run --locked pre-commit run --config pre-commit/.pre-commit-config.yaml blank-config-templates --all-files
+uv run --locked pre-commit run --config pre-commit/.pre-commit-config.yaml detect-secrets --all-files
+```
+
+Never load private `.env` files for database-free checks. Scanner findings
+require review; never add a broad exclusion or a baseline of unreviewed secrets.
+The scan covers tracked content, not every historical commit.
 
 When changing dependencies, run `uv lock`, then `uv sync --locked` and the
 quality checks above. Commit `pyproject.toml` and `uv.lock` together. Do not
@@ -150,7 +168,8 @@ formatting, linting, strict typing and pytest with coverage on Linux and Windows
 using Python 3.13. The [commit policy workflow](.github/workflows/commit-messages.yml)
 checks PR titles and Git subjects. The [security workflow](.github/workflows/security.yml)
 audits locked runtime and development dependencies on both platforms against
-known vulnerabilities using pip-audit. It also runs weekly and on demand.
+known vulnerabilities using pip-audit and scans tracked files for secrets in
+a separate Linux job. It also runs weekly and on demand.
 Audit coverage is limited to the selected Python version and runner platforms;
 it does not inspect application logic, future environments, build-system
 requirements, or the native engine. No numerical coverage threshold is imposed.
@@ -166,7 +185,7 @@ Remove the generated requirements file after use. Dependabot proposes weekly
 `uv` dependency and GitHub Actions updates with scoped commit prefixes.
 
 After the first successful workflow runs, configure a branch ruleset targeting
-`main`: require pull requests and the five checks below, require the branch to
+`main`: require pull requests and the seven checks below, require the branch to
 be up to date, require linear history, and block force pushes and deletion.
 Keep squash merging as the only allowed merge method. A solo maintainer should
 not require an independent approval until a second reviewer is available.
@@ -176,6 +195,8 @@ not require an independent approval until a second reviewer is available.
 - `Validate scoped commits`
 - `Dependency audit (ubuntu-latest)`
 - `Dependency audit (windows-latest)`
+- `Automatic application release / Validate release metadata`
+- `Secret scanning`
 
 Select the actual GitHub Actions checks in the ruleset UI. No workflow file
 alone configures repository protection; maintainers must enable the ruleset.

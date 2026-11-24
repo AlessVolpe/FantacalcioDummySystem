@@ -1,8 +1,28 @@
 minimum_pre_commit_version: "4.2.0"
 default_install_hook_types: [pre-commit, pre-push]
 repos:
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: 01886c8a910c64595c47f186ca1ffc0b77fa5458 # pragma: allowlist secret (v1.5.0 commit SHA)
+    hooks:
+      - id: detect-secrets
+        args: [--no-verify]
+        stages: [pre-commit]
   - repo: local
     hooks:
+      - id: forbid-private-config
+        name: Reject private configuration files
+        entry: uv run --locked python -c "raise SystemExit('Private configuration must not be tracked')"
+        language: system
+        files: '(?i)(^|/)(\.env($|\.)|local_settings\.py$|secrets/)'
+        exclude: '^examples/\.env\.(development|testing|postgres)\.example$'
+        pass_filenames: false
+        stages: [pre-commit]
+      - id: blank-config-templates
+        name: Require empty configuration templates
+        entry: uv run --locked python scripts/check_config_templates.py
+        language: system
+        files: '^examples/\.env\.(development|testing|postgres)\.example$'
+        stages: [pre-commit]
       - id: ruff-format
         name: Ruff formatting
         entry: uv run --locked ruff format --check .
