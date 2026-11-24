@@ -13,6 +13,7 @@
     <a href="pyproject.toml"><img alt="Required Python version" src="https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FAlessVolpe%2FFantacalcioDummySystem%2Fmain%2Fpyproject.toml&amp;query=%24.project.requires-python&amp;label=Python&amp;style=flat-square&amp;logo=python&amp;color=3776AB"></a>
     <a href="https://github.com/AlessVolpe/FantacalcioDummySystem"><img alt="Repository primary language" src="https://img.shields.io/github/languages/top/AlessVolpe/FantacalcioDummySystem?style=flat-square&amp;label=primary-language"></a>
     <a href="https://github.com/AlessVolpe/CentralRankingDogma/releases"><img alt="Latest upstream Central Ranking Dogma release" src="https://img.shields.io/github/v/release/AlessVolpe/CentralRankingDogma?style=flat-square&amp;label=CRD%20upstream&amp;logo=c"></a>
+    <a href="LICENSE"><img alt="Repository license" src="https://img.shields.io/github/license/AlessVolpe/FantacalcioDummySystem?style=flat-square&amp;label=license"></a>
     <a href="https://github.com/AlessVolpe/FantacalcioDummySystem/commits/main/"><img alt="Last commit on main" src="https://img.shields.io/github/last-commit/AlessVolpe/FantacalcioDummySystem/main?style=flat-square&amp;label=last%20commit"></a>
   </p>
   <p>
@@ -22,7 +23,9 @@
     <a href="#technology-stack">Technologies</a> ·
     <a href="#development-status">Development</a> ·
     <a href="#reproducibility-and-limitations">Reproducibility</a> ·
-    <a href="#history-and-trivia">History</a>
+    <a href="#history-and-trivia">History</a> ·
+    <a href="#contributing">Contributing</a> ·
+    <a href="#licensing">License</a>
   </p>
 </div>
 
@@ -104,6 +107,8 @@ The first development phase establishes the application foundation before integr
 
 - [x] Establish the separate Python repository and `uv` project scaffold.
 - [x] Preserve the previous Java implementation in a separate repository.
+- [x] Establish repository governance and contribution policies.
+- [ ] Configure development tooling and continuous integration.
 - [ ] Define application modules, data models and API contracts.
 - [ ] Implement competition management, authentication and historical data import.
 - [ ] Integrate `crd-json` and background experiment execution.
@@ -148,6 +153,12 @@ Preserved from the [original Java README](https://github.com/AlessVolpe/Fantacal
 
 </details>
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow, mandatory scoped commit messages and reproducibility requirements. Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md). Report security vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
+
 ## Licensing
 
-The [deprecated Java implementation](https://github.com/AlessVolpe/FantacalcioDummySystem-Deprecated/blob/main/LICENSE) and [Central Ranking Dogma](https://github.com/AlessVolpe/CentralRankingDogma/blob/master/LICENSE) are distributed under the GNU General Public License version 3. The new Python repository does not yet contain its own license file; its licensing remains to be established explicitly before distribution.
+Fantacalcio Dummy System is licensed under the [GNU Affero General Public License version 3 only (AGPL-3.0-only)](LICENSE), unless explicitly stated otherwise. The license includes obligations concerning access to the corresponding source of modified versions used over a network.
+
+The [deprecated Java implementation](https://github.com/AlessVolpe/FantacalcioDummySystem-Deprecated/blob/main/LICENSE) and [Central Ranking Dogma](https://github.com/AlessVolpe/CentralRankingDogma/blob/master/LICENSE) retain their own GNU GPL version 3 licensing. This repository does not relicense either project. The native engine remains an independently maintained dependency. The [Code of Conduct](CODE_OF_CONDUCT.md) adopts an independently licensed community standard.
