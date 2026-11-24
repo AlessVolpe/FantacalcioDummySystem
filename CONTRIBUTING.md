@@ -83,6 +83,11 @@ update the lockfile simply to run routine checks.
 - Do not commit credentials, private league data, personal information, local
   databases, generated builds or temporary patch files.
 
+Update the [current architectural references](docs/index.md), [roadmap](docs/roadmap.md)
+and relevant [ADR](docs/adr/README.md) when changing system boundaries or
+scientific contracts. Distinguish proposed, accepted and implemented behavior.
+Supersede accepted decisions rather than silently rewriting them.
+
 ## Scientific integrity
 
 Changes affecting experiment results should document input revisions, engine
