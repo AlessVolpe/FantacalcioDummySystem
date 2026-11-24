@@ -109,7 +109,7 @@ Explore the [application architecture](docs/architecture/system.md), [logical mo
 
 ## Development status
 
-The first development phase establishes the application foundation before integrating the native simulation engine.
+The repository foundations milestone is complete at version 0.1.1. The next implementation milestone is 0.2.0 (Backend foundations). The application is still a scaffold; this baseline is not a functional web service.
 
 - [x] Establish the separate Python repository and `uv` project scaffold.
 - [x] Preserve the previous Java implementation in a separate repository.
@@ -124,7 +124,7 @@ The first development phase establishes the application foundation before integr
 - [ ] Implement statistical visualization, experiment inspection and publication.
 - [ ] Establish automated verification, deployment and comprehensive documentation.
 
-See the [documentation index](docs/index.md) and [development roadmap](docs/roadmap.md) for milestone exit criteria and outstanding decisions.
+See the [documentation index](docs/index.md), [development roadmap](docs/roadmap.md) and [changelog](CHANGELOG.md) for milestone exit criteria, outstanding decisions and the release history.
 
 ### Quick start
 

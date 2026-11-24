@@ -5,17 +5,35 @@ version sequence. Version targets are planning labels, not release promises.
 
 ## 0.1.x: Repository foundations
 
-| PR | Deliverable | Status at PR 4 |
-| --- | --- | --- |
-| 1 | Governance, AGPL licensing and contribution policy | Merged |
-| 2 | uv development group, Ruff, mypy, pytest and local hooks | Merged |
-| 3 | CI, scoped commit policy and security audit | Merged (workflow files) |
-| 4 | Architectural documentation, ADRs and roadmap | This PR |
+**Status:** completed in the 0.1.1 foundation baseline.
 
-Exit: documentation reviewed, workflow checks passing, repository ruleset
-configured by maintainer. Repository administration is not inferred from files.
-The current package version remains 0.1.0 in this documentation-only PR;
-consider 0.1.1 after foundation acceptance.
+| GitHub PR | Deliverable | Status |
+| --- | --- | --- |
+| [#1](https://github.com/AlessVolpe/FantacalcioDummySystem/pull/1) | Governance, AGPL licensing and contribution policy | Merged |
+| [#2](https://github.com/AlessVolpe/FantacalcioDummySystem/pull/2) | uv development group, Ruff, mypy, pytest and local hooks | Merged |
+| [#3](https://github.com/AlessVolpe/FantacalcioDummySystem/pull/3) | CI, scoped commit policy and security audit | Merged |
+| [#6](https://github.com/AlessVolpe/FantacalcioDummySystem/pull/6) | Architectural documentation, ADRs and roadmap | Merged |
+
+Routine GitHub Actions dependency maintenance also landed in
+[#4](https://github.com/AlessVolpe/FantacalcioDummySystem/pull/4)
+(`actions/setup-python` 7.0.0 to 7.1.0) and
+[#5](https://github.com/AlessVolpe/FantacalcioDummySystem/pull/5)
+(`astral-sh/setup-uv` 10.3.3 to 10.4.0).
+
+### Foundation acceptance
+
+- Documentation and architectural decisions merged in #6.
+- Repository ruleset recorded as enabled in the [maintained README](../README.md#development-status); administrative configuration remains the maintainer's responsibility.
+- Successful main-branch workflow runs on the pre-closure commit
+  [`e4c9944`](https://github.com/AlessVolpe/FantacalcioDummySystem/commit/e4c994448ed4c38fa92ec869a4d2cd388f615efa):
+  [Python quality](https://github.com/AlessVolpe/FantacalcioDummySystem/actions/runs/45402187780),
+  [commit policy](https://github.com/AlessVolpe/FantacalcioDummySystem/actions/runs/45402187785),
+  [dependency security](https://github.com/AlessVolpe/FantacalcioDummySystem/actions/runs/45402187873).
+- The closure PR must pass the required checks before merging. Tag `v0.1.1`
+  only after successful verification of the merged release commit.
+
+The next implementation milestone is **0.2.0: Backend foundations**.
+See the [changelog](../CHANGELOG.md) for the foundation release record.
 
 ## Implementation milestones
 
