@@ -35,8 +35,10 @@ closed by default. Protect state-changing operations from cross-site requests.
 
 - Adopt a consistent case-insensitive email identity policy: normalize before
   lookup and enforce uniqueness at the database boundary, including concurrent
-  registration. Do not apply provider-specific alias rewriting. Confirm the
-  exact canonicalization and constraint implementation in the initialization PR.
+  registration. Do not apply provider-specific alias rewriting. The
+  initialization PR selects ASCII canonical email storage and PostgreSQL
+  constraints; see the [backend reference](../architecture/backend.md#django-initialization).
+  Internationalized email support remains subject to review before registration.
 - Use expiring, purpose-bound, single-use verification and reset tokens;
   do not log or expose tokens in public API responses. Provide a safe resend
   path, and invalidate old tokens when appropriate.

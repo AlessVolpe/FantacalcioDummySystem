@@ -17,13 +17,16 @@ Participation is subject to the [Code of Conduct](CODE_OF_CONDUCT.md).
 5. Open a pull request against `main`, describing the motivation, verification,
    limitations and any compatibility or migration implications.
 
-The application is still a scaffold, but local quality checks are configured.
+The Django project is initialized; the public application and PostgreSQL
+provisioning remain pending. Local quality checks are configured.
 GitHub Actions verifies the same checks on Linux and Windows. Avoid unrelated
 reformatting or generated files.
 
 ## Local quality checks
 
-The `dev` dependency group contains Ruff, mypy, pytest, pytest-cov and pre-commit.
+The `dev` dependency group contains Ruff, mypy, pytest, pytest-cov, pre-commit,
+pytest-django and django-stubs. See the [backend reference](docs/architecture/backend.md#django-initialization)
+for database-free checks and the pending real-database verification.
 `uv sync --locked` installs this group by default. To install only runtime
 dependencies, use `uv sync --locked --no-dev`.
 
@@ -35,6 +38,7 @@ uv sync --locked
 uv run --locked ruff format --check .
 uv run --locked ruff check .
 uv run --locked mypy
+uv run --locked python manage.py check --settings=fantacalciodummysystem.config.settings.testing
 uv run --locked pytest --cov --cov-report=term-missing
 ```
 
