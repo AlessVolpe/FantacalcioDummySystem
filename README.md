@@ -141,10 +141,10 @@ git clone https://github.com/AlessVolpe/FantacalcioDummySystem.git
 cd FantacalcioDummySystem
 uv sync --locked
 uv run --locked fantacalciodummysystem
-uv run --locked python manage.py check
+uv run --locked python manage.py check --settings=fantacalciodummysystem.config.settings.static
 ```
 
-The legacy entry point still prints `Hello from fantacalciodummysystem!`. The Django system check does not provision or migrate a database. See [Django initialization](docs/architecture/backend.md#django-initialization) for the settings, identity policy and verification commands.
+The legacy entry point still prints `Hello from fantacalciodummysystem!`. The static Django system check needs no database or credentials. For database-backed commands, follow the [private local PostgreSQL setup](docs/local-postgresql.md). See [Django initialization](docs/architecture/backend.md#django-initialization) for the settings, identity policy and verification commands.
 
 For formatting, linting, static typing, tests, coverage and local Git hooks, see the [local quality checks](CONTRIBUTING.md#local-quality-checks) and
 [continuous integration](CONTRIBUTING.md#continuous-integration).

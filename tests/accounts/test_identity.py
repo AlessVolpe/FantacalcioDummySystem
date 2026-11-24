@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 import uuid
+from secrets import token_urlsafe
 
 import pytest
 from django.contrib.auth import get_user_model
@@ -72,13 +73,14 @@ def test_manager_hashes_password_and_canonicalizes(
         assert kwargs == {"using": None}
 
     monkeypatch.setattr(User, "save", no_save)
+    password = token_urlsafe(32)
     user = User.objects.create_user(
-        " EXAMPLE@Example.COM ", "not-a-real-password", display_name=" Example "
+        " EXAMPLE@Example.COM ", password, display_name=" Example "
     )
     assert user.email == "example@example.com"
     assert user.display_name == "Example"
-    assert user.password != "not-a-real-password"
-    assert user.check_password("not-a-real-password")
+    assert user.password != password
+    assert user.check_password(password)
     assert user.email_verified_at is None
 
 

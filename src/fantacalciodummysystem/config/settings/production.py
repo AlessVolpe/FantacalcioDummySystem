@@ -1,14 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
-from django.core.exceptions import ImproperlyConfigured
-
 from .base import *  # noqa: F403 - Django settings inheritance
-from .environment import postgres, production_hosts, required
+from .environment import persistent_secret, postgres, production_hosts
 
 DEBUG = False
-SECRET_KEY = required("FDS_SECRET_KEY")
-if len(SECRET_KEY) < 50 or SECRET_KEY.startswith("fds-"):
-    raise ImproperlyConfigured("FDS_SECRET_KEY must be a strong production secret")
+SECRET_KEY = persistent_secret("FDS_SECRET_KEY")
 ALLOWED_HOSTS = production_hosts()
 DATABASES = postgres("FDS_DB_")
 SESSION_COOKIE_SECURE = True

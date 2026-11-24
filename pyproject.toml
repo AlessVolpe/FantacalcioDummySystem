@@ -62,11 +62,11 @@ warn_unreachable = true
 show_error_codes = true
 
 [tool.django-stubs]
-django_settings_module = "fantacalciodummysystem.config.settings.testing"
+django_settings_module = "fantacalciodummysystem.config.settings.static"
 
 [tool.pytest.ini_options]
 minversion = "8.3"
-DJANGO_SETTINGS_MODULE = "fantacalciodummysystem.config.settings.testing"
+DJANGO_SETTINGS_MODULE = "fantacalciodummysystem.config.settings.static"
 testpaths = ["tests"]
 pythonpath = ["."]
 addopts = ["-ra", "--strict-config", "--strict-markers", "--import-mode=importlib"]

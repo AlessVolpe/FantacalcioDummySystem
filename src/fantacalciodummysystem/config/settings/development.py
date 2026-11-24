@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 from .base import *  # noqa: F403 - Django settings inheritance
-from .environment import postgres
+from .environment import persistent_secret, postgres
 
 DEBUG = True
-SECRET_KEY = "fds-development-only-not-a-production-secret"
+SECRET_KEY = persistent_secret("FDS_DEV_SECRET_KEY")
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
 DATABASES = postgres("FDS_DEV_DB_", local=True)
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

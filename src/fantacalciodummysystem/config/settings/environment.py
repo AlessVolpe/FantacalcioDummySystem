@@ -12,24 +12,20 @@ def required(name: str) -> str:
     return value
 
 
+def persistent_secret(name: str) -> str:
+    value = required(name)
+    if len(value) < 50 or len(set(value)) < 5 or value.startswith("django-insecure-"):
+        raise ImproperlyConfigured(f"Generate a strong random secret for {name}")
+    return value
+
+
 def postgres(
     prefix: str, *, local: bool = False
 ) -> dict[str, dict[str, str | dict[str, int]]]:
-    defaults = {
-        "NAME": "fds_test" if prefix == "FDS_TEST_DB_" else "fds_dev",
-        "USER": "fds",
-        "PASSWORD": "fds-local-only",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
-    }
-
     config = {
-        key: os.environ.get(prefix + key, default) if local else required(prefix + key)
-        for key, default in defaults.items()
+        key: required(prefix + key)
+        for key in ("NAME", "USER", "PASSWORD", "HOST", "PORT")
     }
-
-    if any(not value.strip() for value in config.values()):
-        raise ImproperlyConfigured(f"Empty PostgreSQL setting for {prefix}")
 
     if local and config["HOST"] not in {"127.0.0.1", "localhost", "::1"}:
         raise ImproperlyConfigured(f"Local database must use loopback for {prefix}")

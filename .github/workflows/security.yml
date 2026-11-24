@@ -38,3 +38,24 @@ jobs:
         run: >-
           uvx --python 3.13 pip-audit==2.10.1
           --strict --no-deps --disable-pip -r audit-requirements.txt
+
+  secrets:
+    name: Secret scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          version: "0.13.9"
+          enable-cache: false
+      - name: Install locked development environment
+        run: uv sync --locked --python 3.13
+      - name: Reject tracked private configuration
+        run: uv run --locked pre-commit run --config pre-commit/.pre-commit-config.yaml forbid-private-config --all-files
+      - name: Reject populated configuration templates
+        run: uv run --locked pre-commit run --config pre-commit/.pre-commit-config.yaml blank-config-templates --all-files
+      - name: Scan tracked source for secrets
+        run: uv run --locked pre-commit run --config pre-commit/.pre-commit-config.yaml detect-secrets --all-files
