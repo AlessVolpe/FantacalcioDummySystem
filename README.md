@@ -25,6 +25,7 @@
     <a href="#system-architecture">Architecture</a> ·
     <a href="#technology-stack">Technologies</a> ·
     <a href="#development-status">Development</a> ·
+    <a href="docs/index.md">Documentation</a> ·
     <a href="#reproducibility-and-limitations">Reproducibility</a> ·
     <a href="#history-and-trivia">History</a> ·
     <a href="#contributing">Contributing</a> ·
@@ -92,6 +93,8 @@ The diagram describes the **planned application architecture**. The native `crd-
 
 The integration boundary is the engine's [JSON CLI v1 contract](https://github.com/AlessVolpe/CentralRankingDogma/blob/master/docs/integration/json-cli-v1.md), exposed by the independent `crd-json` executable. The application should record the exact engine version used by each experiment; the upstream release badge above is informational and does not indicate a pinned application dependency.
 
+Explore the [application architecture](docs/architecture/system.md), [logical module and data model](docs/architecture/modules.md), [research data flow](docs/architecture/data-flow.md) and [architecture decision records](docs/adr/README.md).
+
 ## Technology stack
 
 | Layer | Technology | Status |
@@ -113,12 +116,15 @@ The first development phase establishes the application foundation before integr
 - [x] Establish repository governance and contribution policies.
 - [x] Configure local development tooling and automated tests.
 - [x] Configure continuous integration and dependency security checks.
-- [ ] Enable required repository rules after successful workflow runs.
-- [ ] Define application modules, data models and API contracts.
+- [x] Enable required repository rules after successful workflow runs.
+- [x] Document the target architecture, logical module boundaries and decision records.
+- [ ] Finalize implementation-level data models and API contracts.
 - [ ] Implement competition management, authentication and historical data import.
 - [ ] Integrate `crd-json` and background experiment execution.
 - [ ] Implement statistical visualization, experiment inspection and publication.
 - [ ] Establish automated verification, deployment and comprehensive documentation.
+
+See the [documentation index](docs/index.md) and [development roadmap](docs/roadmap.md) for milestone exit criteria and outstanding decisions.
 
 ### Quick start
 
