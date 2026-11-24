@@ -69,8 +69,8 @@ The application and native engine have distinct responsibilities. The web applic
 ```mermaid
 flowchart TB
     UI["React / TypeScript frontend"]
-    API["Django backend"]
-    DB[("Persistent database")]
+    API["Django 5.2 LTS / DRF"]
+    DB[("PostgreSQL")]
     JOB["Celery background workers"]
     CLI["crd-json / JSON CLI v1"]
     CRD["Central Ranking Dogma / ISO C11"]
@@ -101,7 +101,10 @@ Explore the [application architecture](docs/architecture/system.md), [logical mo
 | --- | --- | --- |
 | Python runtime | [Python](https://www.python.org/) | Configured |
 | Project and dependency management | [uv](https://docs.astral.sh/uv/) | Configured |
-| Web backend | [Django](https://www.djangoproject.com/) | Planned |
+| Web backend | [Django 5.2 LTS](https://www.djangoproject.com/) | Selected; implementation pending |
+| REST API | [Django REST Framework](https://www.django-rest-framework.org/), OpenAPI | Selected; implementation pending |
+| Persistence | [PostgreSQL](https://www.postgresql.org/) | Selected; implementation pending |
+| Browser authentication | Django sessions, CSRF protection | Selected; implementation pending |
 | Web frontend | [React](https://react.dev/) and [TypeScript](https://www.typescriptlang.org/) | Planned |
 | Background processing | [Celery](https://docs.celeryq.dev/) | Planned |
 | Native simulation engine | [Central Ranking Dogma](https://github.com/AlessVolpe/CentralRankingDogma), ISO C11 | Available upstream; integration planned |
@@ -109,7 +112,7 @@ Explore the [application architecture](docs/architecture/system.md), [logical mo
 
 ## Development status
 
-The repository foundations milestone is complete at version 0.1.1. The next implementation milestone is 0.2.0 (Backend foundations). The application is still a scaffold; this baseline is not a functional web service.
+The repository foundations milestone is complete at version 0.1.1. The current implementation milestone is 0.2.0 (Backend foundations). The application is still a scaffold; this baseline is not a functional web service.
 
 - [x] Establish the separate Python repository and `uv` project scaffold.
 - [x] Preserve the previous Java implementation in a separate repository.
@@ -118,13 +121,14 @@ The repository foundations milestone is complete at version 0.1.1. The next impl
 - [x] Configure continuous integration and dependency security checks.
 - [x] Enable required repository rules after successful workflow runs.
 - [x] Document the target architecture, logical module boundaries and decision records.
+- [x] Select backend technologies, identity and REST API conventions.
 - [ ] Finalize implementation-level data models and API contracts.
 - [ ] Implement competition management, authentication and historical data import.
 - [ ] Integrate `crd-json` and background experiment execution.
 - [ ] Implement statistical visualization, experiment inspection and publication.
 - [ ] Establish automated verification, deployment and comprehensive documentation.
 
-See the [documentation index](docs/index.md), [development roadmap](docs/roadmap.md) and [changelog](CHANGELOG.md) for milestone exit criteria, outstanding decisions and the release history.
+See the [documentation index](docs/index.md), [backend foundations](docs/architecture/backend.md), [development roadmap](docs/roadmap.md) and [changelog](CHANGELOG.md) for milestone exit criteria, outstanding decisions and the release history.
 
 ### Quick start
 

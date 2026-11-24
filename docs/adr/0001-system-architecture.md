@@ -1,6 +1,8 @@
 # ADR 0001: Application and native engine boundaries
 
-**Status:** Accepted direction; application stack provisional.
+**Status:** Accepted direction; backend choices resolved by
+[ADR 0006](0006-backend-stack.md), [ADR 0007](0007-identity-and-authentication.md)
+and [ADR 0008](0008-rest-api.md).
 
 ## Context
 

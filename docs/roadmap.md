@@ -32,7 +32,7 @@ Routine GitHub Actions dependency maintenance also landed in
 - The closure PR must pass the required checks before merging. Tag `v0.1.1`
   only after successful verification of the merged release commit.
 
-The next implementation milestone is **0.2.0: Backend foundations**.
+The current implementation milestone is **0.2.0: Backend foundations**.
 See the [changelog](../CHANGELOG.md) for the foundation release record.
 
 ## Implementation milestones
@@ -49,9 +49,29 @@ See the [changelog](../CHANGELOG.md) for the foundation release record.
 | 0.9.0 | Deployment and validation | Reproducible Docker Compose deployment, Linux integration, backups/restores, operational limits and end-to-end tests |
 | 1.0.0 | First stable release | Documented independently deployable research application; supported versions and limitations, reproducibility and security review |
 
+## 0.2.0: Backend foundations
+
+**Status:** in progress; architecture selected, implementation pending.
+
+| PR (milestone sequence) | Deliverable | Acceptance criteria |
+| --- | --- | --- |
+| 1 | Architecture | ADRs 0006–0008 reviewed and merged |
+| 2 | Django initialization | Django 5.2 LTS, settings, management commands, custom email/UUID user model and initial migration; no default user migration before the custom model |
+| 3 | Persistence | PostgreSQL Compose, host uv workflow, migration and real database tests; CI and reusable release workflows provision PostgreSQL on supported runners |
+| 4 | Authentication | Public registration, verification, recovery, login/logout, session and CSRF checks, access controls and abuse protection |
+| 5 | API foundations | Versioned REST resources, OpenAPI, consistent errors, bounded pagination, health checks and explicit permissions |
+| 6 | Backend verification | Fresh database migrations, migration drift checks, strict typing, security settings, integration tests on Linux and Windows, updated documentation |
+| Closure | Release | Changelog, acceptance evidence, version bump and automatic v0.2.0 release |
+
+Keep version 0.1.1 until milestone closure. Coordinate the database-dependent
+checks in PRs 2 and 3 so no intermediate merge breaks the existing CI gates:
+introduce required PostgreSQL provisioning before enabling tests that need it.
+Track the Django 6.2 LTS upgrade as a priority when stable and compatible,
+independent of the milestone sequence ([ADR 0006](adr/0006-backend-stack.md)).
+
 ## Before implementation
 
-Resolve database and authentication specifics in 0.2.0; competition lifecycle,
+Resolve remaining identity implementation details in 0.2.0; competition lifecycle,
 access roles and authorized import formats in 0.3.0; supported native artifact
 and schema compatibility in 0.4.0; broker, retries, quotas and retention in
 0.5.0. Publication and anonymization requirements must be considered in the

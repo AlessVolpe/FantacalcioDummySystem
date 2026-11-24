@@ -14,8 +14,8 @@ flowchart TB
     USER["Browser / researcher"]
     subgraph FDS["FDS deployment (planned)"]
         UI["React / TypeScript"]
-        API["Django HTTP API"]
-        DB[("Relational database")]
+        API["Django 5.2 LTS / DRF"]
+        DB[("PostgreSQL")]
         Q["Job broker"]
         W["Celery workers"]
         UI <-->|HTTPS / API| API
@@ -49,6 +49,10 @@ standalone CRD service or direct Python binding is required.
 | CRD | Native domain validation, constrained calendar generation, deterministic resolution and Monte Carlo aggregation |
 
 ## Deployment and trust
+
+The frontend and versioned REST API share one HTTPS origin behind a reverse
+proxy. Authentication uses Django sessions and CSRF protection; see
+[backend foundations](backend.md) for the selected stack and local topology.
 
 The intended deployment is a Linux VPS using Docker Compose; Windows is a local
 development and verification target. The web server and worker can be separate

@@ -16,9 +16,10 @@ logical, not Django model definitions, table names or frozen HTTP contracts.
 | API / frontend | User-facing commands, reads and presentation | Direct native execution from browser requests |
 
 Keep domain and application services independently testable; a view or task
-should invoke them rather than duplicate business rules. Exact Django app paths,
-API routes, authentication mechanism and migration strategy belong to the
-implementation milestones. Start with a modular monolith; avoid splitting each
+should invoke them rather than duplicate business rules. The selected identity and REST conventions are recorded in
+[ADR 0007](../adr/0007-identity-and-authentication.md) and
+[ADR 0008](../adr/0008-rest-api.md). Exact domain model fields, API routes
+and migration details belong to the implementation milestones. Start with a modular monolith; avoid splitting each
 logical module into its own deployed service.
 
 ## Logical records
