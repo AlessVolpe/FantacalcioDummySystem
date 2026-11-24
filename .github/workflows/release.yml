@@ -1,0 +1,149 @@
+name: Automatic application release
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: Validate release metadata
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+      publish: ${{ steps.version.outputs.publish }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+      - name: Detect explicit version bump
+        id: version
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          import subprocess
+          import tomllib
+          from pathlib import Path
+
+          def version_tuple(value):
+              if not isinstance(value, str) or not re.fullmatch(
+                  r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)", value
+              ):
+                  raise SystemExit("Expected a three-component SemVer version")
+              return tuple(map(int, value.split(".")))
+
+          project = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))["project"]
+          version = project["version"]
+          current = version_tuple(version)
+          base = os.environ["BASE"]
+          if not re.fullmatch(r"[0-9a-f]{40}", base) or base == "0" * 40:
+              raise SystemExit("Missing previous revision; refusing release planning")
+          previous = version_tuple(tomllib.loads(subprocess.check_output(
+              ["git", "show", f"{base}:pyproject.toml"], text=True, encoding="utf-8"
+          ))["project"]["version"])
+          if current < previous:
+              raise SystemExit("Application version must not decrease")
+          lock = tomllib.loads(Path("uv.lock").read_text(encoding="utf-8"))
+          packages = [p for p in lock["package"] if p["name"] == project["name"]]
+          if len(packages) != 1 or packages[0]["version"] != version:
+              raise SystemExit("Application version differs from uv.lock")
+          changed = current > previous and current >= (0, 1, 1)
+          if changed:
+              changelog = Path("CHANGELOG.md").read_text(encoding="utf-8")
+              if not re.search(rf"^## \[{re.escape(version)}\](?:\s|$)", changelog, re.M):
+                  raise SystemExit(f"Missing changelog section for {version}")
+          publish = changed and os.environ["GITHUB_EVENT_NAME"] == "push" and os.environ["GITHUB_REF"] == "refs/heads/main"
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              print(f"tag=v{version}", file=output)
+              print(f"publish={str(publish).lower()}", file=output)
+          PY
+
+  quality:
+    needs: plan
+    if: needs.plan.outputs.publish == 'true'
+    uses: ./.github/workflows/ci.yml
+
+  commits:
+    needs: plan
+    if: needs.plan.outputs.publish == 'true'
+    uses: ./.github/workflows/commit-messages.yml
+
+  security:
+    needs: plan
+    if: needs.plan.outputs.publish == 'true'
+    uses: ./.github/workflows/security.yml
+
+  publish:
+    name: Publish verified application version
+    needs: [plan, quality, commits, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.plan.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: fds-release-publication
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Create exact-commit tag and publish source release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ needs.plan.outputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Fail closed on API or Git transport errors. Never move an existing tag.
+          git ls-remote --tags origin > "$RUNNER_TEMP/fds-tags.txt"
+          refs="$RUNNER_TEMP/fds-tags.txt"
+          target="$(awk -v ref="refs/tags/$TAG" '$2 == ref {print $1}' "$refs")"
+          peeled="$(awk -v ref="refs/tags/$TAG^{}" '$2 == ref {print $1}' "$refs")"
+          target="${peeled:-$target}"
+          if [[ -n "$target" && "$target" != "$GITHUB_SHA" ]]; then
+            echo "::error::Tag $TAG points to a different commit"
+            exit 1
+          fi
+          gh api --paginate "repos/$GH_REPO/releases?per_page=100" \
+            --jq '.[] | [.tag_name, .draft] | @tsv' > "$RUNNER_TEMP/fds-releases.txt"
+          release="$(awk -F '\t' -v tag="$TAG" '$1 == tag {print $2}' "$RUNNER_TEMP/fds-releases.txt")"
+          if [[ "$release" == false && "$target" == "$GITHUB_SHA" ]]; then
+            echo "Release $TAG already exists at the verified commit."
+            exit 0
+          elif [[ -n "$release" ]]; then
+            echo "::error::Existing release requires maintainer review"
+            exit 1
+          fi
+          latest="$(awk '{print $2}' "$refs" | sed 's@^refs/tags/@@' | { grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || test "$?" -eq 1; } | sort -V | tail -n 1)"
+          if [[ -n "$latest" && "$latest" != "$TAG" && "$(printf '%s\n' "$latest" "$TAG" | sort -V | tail -n 1)" == "$latest" ]]; then
+            echo "::error::Refusing to publish $TAG after newer tag $latest"
+            exit 1
+          fi
+          if [[ -z "$target" ]]; then
+            gh api --method POST "repos/$GH_REPO/git/refs" \
+              -f "ref=refs/tags/$TAG" -f "sha=$GITHUB_SHA" --silent
+          fi
+          # An orphan tag on this exact SHA is safe to reuse after a failed run.
+          # Source archives are supplied by GitHub; no package or deployment is implied.
+          args=(--verify-tag --title "Fantacalcio Dummy System $TAG" --generate-notes)
+          if [[ "$TAG" == v0.* ]]; then
+            args+=(--prerelease --latest=false)
+          else
+            args+=(--latest)
+          fi
+          gh release create "$TAG" "${args[@]}"
