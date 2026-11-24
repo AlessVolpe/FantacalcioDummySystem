@@ -116,7 +116,7 @@ The first development phase establishes the application foundation before integr
 - [x] Establish repository governance and contribution policies.
 - [x] Configure local development tooling and automated tests.
 - [x] Configure continuous integration and dependency security checks.
-- [ ] Enable required repository rules after successful workflow runs.
+- [x] Enable required repository rules after successful workflow runs.
 - [x] Document the target architecture, logical module boundaries and decision records.
 - [ ] Finalize implementation-level data models and API contracts.
 - [ ] Implement competition management, authentication and historical data import.
