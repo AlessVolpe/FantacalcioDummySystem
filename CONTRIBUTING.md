@@ -17,9 +17,56 @@ Participation is subject to the [Code of Conduct](CODE_OF_CONDUCT.md).
 5. Open a pull request against `main`, describing the motivation, verification,
    limitations and any compatibility or migration implications.
 
-The application is still a scaffold. Automated linting, typing, testing and
-commit validation will be established separately; this policy does not claim
-that those checks already exist. Avoid unrelated reformatting or generated files.
+The application is still a scaffold, but local quality checks are configured.
+GitHub Actions and automatic commit-policy validation will be established in
+separate changes. Avoid unrelated reformatting or generated files.
+
+## Local quality checks
+
+The `dev` dependency group contains Ruff, mypy, pytest, pytest-cov and pre-commit.
+`uv sync --locked` installs this group by default. To install only runtime
+dependencies, use `uv sync --locked --no-dev`.
+
+Run from the repository root on Python 3.13:
+
+```sh
+uv lock --check
+uv sync --locked
+uv run --locked ruff format --check .
+uv run --locked ruff check .
+uv run --locked mypy
+uv run --locked pytest --cov --cov-report=term-missing
+```
+
+Ruff checks imports, common errors and selected modernization and simplification
+rules. Use `uv run --locked ruff check --fix .` and
+`uv run --locked ruff format .` to apply safe fixes and formatting; review the
+resulting diff. Mypy checks source and tests in strict mode. Add explicit types
+and narrow, justified suppressions instead of disabling checks globally.
+
+Pytest collects tests from `tests/` against the installed `src/` package. New
+behavior requires tests; prefer deterministic fixtures and regression cases.
+Coverage includes branches as well as statements. There is no numerical
+coverage gate yet: establish one when substantive domain code exists, rather
+than treating the scaffold's coverage as a meaningful quality target.
+
+Install optional local Git hooks once per clone:
+
+```sh
+uv run --locked pre-commit install --hook-type pre-commit --hook-type pre-push
+uv run --locked pre-commit run --all-files
+uv run --locked pre-commit run --hook-stage pre-push --all-files
+```
+
+The pre-commit stage checks formatting, lint and types; pre-push runs tests and
+coverage. Hooks use the project's locked `uv` environment, without separate
+hook environments or automatic edits. Ensure `uv` is on PATH when Git invokes
+the hooks. Local hooks supplement future required CI checks; they do not
+replace them.
+
+When changing dependencies, run `uv lock`, then `uv sync --locked` and the
+quality checks above. Commit `pyproject.toml` and `uv.lock` together. Do not
+update the lockfile simply to run routine checks.
 
 ## Code and documentation
 

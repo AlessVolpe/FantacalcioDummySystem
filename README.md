@@ -108,7 +108,8 @@ The first development phase establishes the application foundation before integr
 - [x] Establish the separate Python repository and `uv` project scaffold.
 - [x] Preserve the previous Java implementation in a separate repository.
 - [x] Establish repository governance and contribution policies.
-- [ ] Configure development tooling and continuous integration.
+- [x] Configure local development tooling and automated tests.
+- [ ] Configure continuous integration and repository rules.
 - [ ] Define application modules, data models and API contracts.
 - [ ] Implement competition management, authentication and historical data import.
 - [ ] Integrate `crd-json` and background experiment execution.
@@ -122,11 +123,13 @@ The repository currently contains a minimal installable Python project, not a fu
 ```sh
 git clone https://github.com/AlessVolpe/FantacalcioDummySystem.git
 cd FantacalcioDummySystem
-uv sync
-uv run fantacalciodummysystem
+uv sync --locked
+uv run --locked fantacalciodummysystem
 ```
 
 The entry point currently prints `Hello from fantacalciodummysystem!`. No web server, database or simulation integration is started by this command.
+
+For formatting, linting, static typing, tests, coverage and local Git hooks, see the [local quality checks](CONTRIBUTING.md#local-quality-checks).
 
 ## Reproducibility and limitations
 
