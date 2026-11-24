@@ -1,0 +1,83 @@
+# Fantacalcio Dummy System
+
+# Python bytecode and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Python packaging and build outputs
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Python testing, coverage and static analysis
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Django local state and generated assets
+db.sqlite3
+db.sqlite3-journal
+local_settings.py
+/staticfiles/
+/backend/staticfiles/
+
+# Node.js, React and TypeScript
+node_modules/
+.vite/
+*.tsbuildinfo
+.eslintcache
+npm-debug.log*
+
+# Frontend testing
+coverage/
+playwright-report/
+playwright/.cache/
+test-results/
+
+# Environment variables and local secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+/secrets/
+/deployment/secrets/
+
+# Local Docker Compose overrides
+compose.override.yaml
+compose.override.yml
+
+# Celery and local service state
+celerybeat-schedule*
+celerybeat.pid
+*.pid
+
+# Private runtime data (reserved local paths)
+/var/
+/uploads/
+/media/
+/backups/
+/backend/uploads/
+/backend/media/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+
+# IDE and editor metadata
+.idea/
+*.iml
+.vscode/
+
+# Operating system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
