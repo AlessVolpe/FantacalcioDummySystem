@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private security vulnerability report
+    url: https://github.com/AlessVolpe/FantacalcioDummySystem/security/advisories/new
+    about: Report vulnerabilities privately rather than opening a public issue.
+  - name: Central Ranking Dogma
+    url: https://github.com/AlessVolpe/CentralRankingDogma/issues
+    about: Report non-security issues specific to the native simulation engine.

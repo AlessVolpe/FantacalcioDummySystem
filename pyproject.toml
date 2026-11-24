@@ -1,13 +1,20 @@
 [project]
 name = "fantacalciodummysystem"
 version = "0.1.0"
-description = "Add your description here"
+description = "Counterfactual analysis and reproducible simulation of Fantacalcio competitions."
 readme = "README.md"
+license = "AGPL-3.0-only"
+license-files = ["LICENSE"]
 authors = [
     { name = "Alessandro Volpe", email = "37452470+AlessVolpe@users.noreply.github.com" }
 ]
 requires-python = ">=3.13"
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/AlessVolpe/FantacalcioDummySystem"
+Repository = "https://github.com/AlessVolpe/FantacalcioDummySystem"
+Issues = "https://github.com/AlessVolpe/FantacalcioDummySystem/issues"
 
 [project.scripts]
 fantacalciodummysystem = "fantacalciodummysystem:main"

@@ -1,0 +1,22 @@
+name: Feature request
+description: Propose a new application or research capability.
+body:
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: What problem should the feature solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the intended outcome and acceptance criteria.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and considerations
+      description: Include compatibility, data privacy or reproducibility implications, if relevant.

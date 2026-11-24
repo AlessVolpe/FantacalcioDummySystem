@@ -81,3 +81,6 @@ celerybeat.pid
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Git patches
+*.patch
