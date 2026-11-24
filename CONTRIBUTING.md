@@ -18,8 +18,8 @@ Participation is subject to the [Code of Conduct](CODE_OF_CONDUCT.md).
    limitations and any compatibility or migration implications.
 
 The application is still a scaffold, but local quality checks are configured.
-GitHub Actions and automatic commit-policy validation will be established in
-separate changes. Avoid unrelated reformatting or generated files.
+GitHub Actions verifies the same checks on Linux and Windows. Avoid unrelated
+reformatting or generated files.
 
 ## Local quality checks
 
@@ -41,7 +41,7 @@ uv run --locked pytest --cov --cov-report=term-missing
 Ruff checks imports, common errors and selected modernization and simplification
 rules. Use `uv run --locked ruff check --fix .` and
 `uv run --locked ruff format .` to apply safe fixes and formatting; review the
-resulting diff. Mypy checks source and tests in strict mode. Add explicit types
+resulting diff. Mypy checks source, repository scripts and tests in strict mode. Add explicit types
 and narrow, justified suppressions instead of disabling checks globally.
 
 Pytest collects tests from `tests/` against the installed `src/` package. New
@@ -61,7 +61,7 @@ uv run --locked pre-commit run --hook-stage pre-push --all-files
 The pre-commit stage checks formatting, lint and types; pre-push runs tests and
 coverage. Hooks use the project's locked `uv` environment, without separate
 hook environments or automatic edits. Ensure `uv` is on PATH when Git invokes
-the hooks. Local hooks supplement future required CI checks; they do not
+the hooks. Local hooks supplement required CI checks; they do not
 replace them.
 
 When changing dependencies, run `uv lock`, then `uv sync --locked` and the
@@ -112,17 +112,68 @@ build(deps): update development dependencies
 chore(repo): establish repository governance
 ```
 
-Use the appropriate type (`feat`, `fix`, `docs`, `style`, `refactor`, `perf`,
-`test`, `build`, `ci`, `chore`, `revert`). Initial scopes include `repo`,
-`readme`, `license`, `contributing`, `security`, `tooling`, `deps`, `actions`,
-`architecture`, `competition`, `integration`, `experiments`, `api`, `frontend`
-and `deployment`. This list is illustrative until the automated policy is
-introduced. Existing historical commits are not subject to retroactive rewriting.
+The canonical type and scope allowlists are maintained in
+[`scripts/commit_policy.json`](scripts/commit_policy.json). Use lowercase,
+component-specific scopes. The application policy is independent of CRD's native
+scope vocabulary. Update the policy, tests and this guide together when adding
+new scope families. Historical commits are not subject to retroactive rewriting.
+
+Run the validator locally (Git must be installed):
+
+```sh
+uv run --locked python scripts/check_commit_messages.py --title "docs(readme): update project overview"
+uv run --locked python scripts/check_commit_messages.py --range origin/main..HEAD
+uv run --locked python scripts/check_commit_messages.py --commit HEAD
+uv run --locked pytest tests/tooling
+```
+
+PR checks validate the title and each introduced non-merge commit, not the
+historical base branch or GitHub's synthetic merge commit. Actual merge commits
+in the topic branch are excluded by topology; ordinary invalid subjects are not.
+The `--commit` option checks exactly one specified commit, including a merge if
+explicitly selected. The policy checks subject syntax and allowlists, not grammar
+or the semantics of the change. The push workflow rechecks new commits on `main`.
 
 Pull requests use squash merging only; the squash commit subject must use the
 scoped pull request title. Review and correct the generated subject before
-merging if needed. Required status checks and branch rules will be introduced
-with CI. Do not merge unverified changes.
+merging if needed. Do not merge unverified changes.
+
+## Continuous integration
+
+The [quality workflow](.github/workflows/ci.yml) runs locked installation,
+formatting, linting, strict typing and pytest with coverage on Linux and Windows
+using Python 3.13. The [commit policy workflow](.github/workflows/commit-messages.yml)
+checks PR titles and Git subjects. The [security workflow](.github/workflows/security.yml)
+audits locked runtime and development dependencies on both platforms against
+known vulnerabilities using pip-audit. It also runs weekly and on demand.
+Audit coverage is limited to the selected Python version and runner platforms;
+it does not inspect application logic, future environments, build-system
+requirements, or the native engine. No numerical coverage threshold is imposed.
+
+For local audit reproduction (the audit tool is isolated from the project):
+
+```sh
+uv export --locked --all-groups --no-emit-project --no-hashes --format requirements-txt --output-file audit-requirements.txt
+uvx --python 3.13 pip-audit==2.10.1 --strict --no-deps --disable-pip -r audit-requirements.txt
+```
+
+Remove the generated requirements file after use. Dependabot proposes weekly
+`uv` dependency and GitHub Actions updates with scoped commit prefixes.
+
+After the first successful workflow runs, configure a branch ruleset targeting
+`main`: require pull requests and the five checks below, require the branch to
+be up to date, require linear history, and block force pushes and deletion.
+Keep squash merging as the only allowed merge method. A solo maintainer should
+not require an independent approval until a second reviewer is available.
+
+- `Python quality (ubuntu-latest)`
+- `Python quality (windows-latest)`
+- `Validate scoped commits`
+- `Dependency audit (ubuntu-latest)`
+- `Dependency audit (windows-latest)`
+
+Select the actual GitHub Actions checks in the ruleset UI. No workflow file
+alone configures repository protection; maintainers must enable the ruleset.
 
 ## Security reports
 

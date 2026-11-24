@@ -1,0 +1,14 @@
+{
+  "types": [
+    "feat", "fix", "docs", "style", "refactor", "perf", "test", "build",
+    "ci", "chore", "revert"
+  ],
+  "scopes": [
+    "actions", "api", "architecture", "auth", "backend", "calendar",
+    "commits", "competition", "contributing", "data", "database", "deps",
+    "deployment", "docs", "domain", "experiments", "frontend", "integration",
+    "license", "packaging", "publication", "readme", "release", "repo",
+    "research", "security", "serialization", "statistics", "team", "testing",
+    "tooling", "workers"
+  ]
+}

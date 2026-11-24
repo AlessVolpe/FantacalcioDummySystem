@@ -8,6 +8,9 @@
     native simulation engine.
   </p>
   <p>
+    <a href="https://github.com/AlessVolpe/FantacalcioDummySystem/actions/workflows/ci.yml"><img alt="Python quality checks" src="https://img.shields.io/github/actions/workflow/status/AlessVolpe/FantacalcioDummySystem/ci.yml?branch=main&amp;style=flat-square&amp;label=CI&amp;logo=githubactions"></a>
+    <a href="https://github.com/AlessVolpe/FantacalcioDummySystem/actions/workflows/commit-messages.yml"><img alt="Commit message policy" src="https://img.shields.io/github/actions/workflow/status/AlessVolpe/FantacalcioDummySystem/commit-messages.yml?branch=main&amp;style=flat-square&amp;label=commits&amp;logo=githubactions"></a>
+    <a href="https://github.com/AlessVolpe/FantacalcioDummySystem/actions/workflows/security.yml"><img alt="Dependency security" src="https://img.shields.io/github/actions/workflow/status/AlessVolpe/FantacalcioDummySystem/security.yml?branch=main&amp;style=flat-square&amp;label=security&amp;logo=githubactions"></a>
     <img alt="Development status: early development" src="https://img.shields.io/badge/status-early%20development-orange?style=flat-square">
     <a href="pyproject.toml"><img alt="Current application package version" src="https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FAlessVolpe%2FFantacalcioDummySystem%2Fmain%2Fpyproject.toml&amp;query=%24.project.version&amp;prefix=v&amp;label=version&amp;style=flat-square&amp;color=blue"></a>
     <a href="pyproject.toml"><img alt="Required Python version" src="https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FAlessVolpe%2FFantacalcioDummySystem%2Fmain%2Fpyproject.toml&amp;query=%24.project.requires-python&amp;label=Python&amp;style=flat-square&amp;logo=python&amp;color=3776AB"></a>
@@ -109,7 +112,8 @@ The first development phase establishes the application foundation before integr
 - [x] Preserve the previous Java implementation in a separate repository.
 - [x] Establish repository governance and contribution policies.
 - [x] Configure local development tooling and automated tests.
-- [ ] Configure continuous integration and repository rules.
+- [x] Configure continuous integration and dependency security checks.
+- [ ] Enable required repository rules after successful workflow runs.
 - [ ] Define application modules, data models and API contracts.
 - [ ] Implement competition management, authentication and historical data import.
 - [ ] Integrate `crd-json` and background experiment execution.
@@ -129,7 +133,8 @@ uv run --locked fantacalciodummysystem
 
 The entry point currently prints `Hello from fantacalciodummysystem!`. No web server, database or simulation integration is started by this command.
 
-For formatting, linting, static typing, tests, coverage and local Git hooks, see the [local quality checks](CONTRIBUTING.md#local-quality-checks).
+For formatting, linting, static typing, tests, coverage and local Git hooks, see the [local quality checks](CONTRIBUTING.md#local-quality-checks) and
+[continuous integration](CONTRIBUTING.md#continuous-integration).
 
 ## Reproducibility and limitations
 

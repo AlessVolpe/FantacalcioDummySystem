@@ -1,0 +1,45 @@
+name: Commit message policy
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, synchronize, edited, ready_for_review]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  commit-messages:
+    name: Validate scoped commits
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+      - name: Validate PR title and introduced commits
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_HEAD: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            base="$(git merge-base "$PR_BASE" "$PR_HEAD")"
+            python scripts/check_commit_messages.py \
+              --title="$PR_TITLE" --range "$base..$PR_HEAD"
+          elif [[ "$PUSH_BEFORE" =~ ^0+$ ]]; then
+            python scripts/check_commit_messages.py --commit "$PUSH_HEAD"
+          else
+            python scripts/check_commit_messages.py --range "$PUSH_BEFORE..$PUSH_HEAD"
+          fi
