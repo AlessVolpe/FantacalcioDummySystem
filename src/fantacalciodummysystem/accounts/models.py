@@ -19,6 +19,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
+    session_generation = models.UUIDField(default=uuid.uuid4, editable=False)
 
     objects = UserManager()
 
@@ -42,3 +43,24 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self) -> str:
         return self.display_name
+
+
+class AccountToken(models.Model):
+    email = models.EmailField(max_length=254, db_collation="C")
+    purpose = models.CharField(max_length=16)
+    digest = models.CharField(max_length=64, unique=True)
+    password_fingerprint = models.CharField(max_length=64, blank=True)
+    expires_at = models.DateTimeField(db_index=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["email", "purpose"], name="accounts_token_email_purpose"
+            )
+        ]
+
+
+class AuthThrottle(models.Model):
+    key = models.CharField(max_length=64, primary_key=True)
+    count = models.PositiveIntegerField(default=0)
+    expires_at = models.DateTimeField(db_index=True)

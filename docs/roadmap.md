@@ -52,7 +52,8 @@ See the [changelog](../CHANGELOG.md) for the foundation release record.
 ## 0.2.0: Backend foundations
 
 **Status:** in progress; architecture selected; Django initialized; PostgreSQL
-persistence implementation and verification in PR 3.
+persistence verified and merged in [#11](https://github.com/AlessVolpe/FantacalcioDummySystem/pull/11).
+Authentication is in implementation (PR 4).
 
 | PR (milestone sequence) | Deliverable | Acceptance criteria |
 | --- | --- | --- |

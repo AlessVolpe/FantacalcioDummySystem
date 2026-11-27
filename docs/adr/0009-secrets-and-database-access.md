@@ -1,7 +1,8 @@
 # ADR 0009: Secret isolation and database access control
 
-**Status:** Accepted 2026-11-24; local settings and scanning introduced;
-real PostgreSQL and production privilege verification pending.
+**Status:** Accepted 2026-11-24; local settings, scanning and real PostgreSQL
+provisioning verified on Linux and Windows CI; production privilege verification
+remains pending.
 
 ## Context
 

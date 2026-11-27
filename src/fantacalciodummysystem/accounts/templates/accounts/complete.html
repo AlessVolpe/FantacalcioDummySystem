@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if registration %}Complete registration{% else %}Reset password{% endif %} | FDS</title>
+</head>
+<body>
+  <main>
+    <h1>{% if registration %}Complete registration{% else %}Reset password{% endif %}</h1>
+    <p>Use a password manager or generate a unique password of 12 to 128 characters.</p>
+    <form id="complete" method="post" action="{{ endpoint }}">
+      {% csrf_token %}
+      {% if registration %}
+      <p><label>Display name <input name="display_name" autocomplete="nickname" required></label></p>
+      {% endif %}
+      <p><label>New password <input name="password" type="password" autocomplete="new-password" required></label></p>
+      <button type="submit" disabled>Continue</button>
+    </form>
+    <p id="status" role="status"></p>
+    <noscript>JavaScript is required to submit this one-time email token without putting it in the request URL.</noscript>
+  </main>
+  <script nonce="{{ nonce }}">
+    (() => {
+      const form = document.getElementById("complete");
+      const status = document.getElementById("status");
+      const button = form.querySelector("button");
+      let token = new URLSearchParams(location.hash.slice(1)).get("token");
+      history.replaceState(null, "", location.pathname);
+      if (!token || !/^[A-Za-z0-9_-]{43}$/.test(token)) {
+        status.textContent = "Open a valid link from your email.";
+        return;
+      }
+      button.disabled = false;
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        button.disabled = true;
+        const body = {token, password: form.elements.password.value};
+        if (form.elements.display_name) body.display_name = form.elements.display_name.value;
+        if ([...body.password].length < 12 || [...body.password].length > 128) {
+          status.textContent = "Use a password of 12 to 128 characters.";
+          button.disabled = false;
+          return;
+        }
+        try {
+          const response = await fetch(form.action, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {"Content-Type": "application/json", "X-CSRFToken": form.elements.csrfmiddlewaretoken.value},
+            body: JSON.stringify(body),
+            cache: "no-store"
+          });
+          if (response.ok) {
+            token = null;
+            form.reset();
+            form.hidden = true;
+            status.textContent = "Completed. You can now sign in using your new password.";
+            return;
+          }
+          status.textContent = response.status === 429
+            ? "Too many attempts. Try again later."
+            : "Unable to complete the request. Check the password or request a new link.";
+        } catch {
+          status.textContent = "Request failed. Try again or request a new link.";
+        }
+        button.disabled = false;
+      });
+    })();
+  </script>
+</body>
+</html>
