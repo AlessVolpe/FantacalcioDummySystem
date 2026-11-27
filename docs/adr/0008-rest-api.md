@@ -1,6 +1,8 @@
 # ADR 0008: RESTful API and HTTP conventions
 
-**Status:** Accepted 2026-11-24; implementation pending.
+**Status:** Accepted 2026-11-24; API foundations in implementation (PR 5).
+See the [REST API reference](../architecture/rest-api.md) for RFC 9457 Problem
+Details, OpenAPI 3.1, bounded page-number pagination and the health contract.
 
 ## Context
 

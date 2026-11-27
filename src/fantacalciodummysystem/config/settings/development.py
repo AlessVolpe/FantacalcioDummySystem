@@ -11,3 +11,4 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 FDS_AUTH_EMAIL_ENABLED = True
 FDS_AUTH_ORIGIN = "http://localhost:8000"
 DEFAULT_FROM_EMAIL = "fds@example.invalid"
+FDS_API_DOCS_ENABLED = True

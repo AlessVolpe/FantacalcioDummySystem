@@ -38,6 +38,8 @@ jobs:
         run: uv run --locked ruff check .
       - name: Strict type checking
         run: uv run --locked mypy
+      - name: Validate committed OpenAPI schema
+        run: uv run --locked python -m scripts.check_openapi
       - name: Regression tests and branch coverage
         run: uv run --locked pytest --cov --cov-report=term-missing
       - name: Download verified PostgreSQL 19 Windows binaries

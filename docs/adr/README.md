@@ -12,9 +12,9 @@ Supersede accepted decisions with linked records when changing them.
 | [0003](0003-persistence-strategy.md) | Relational persistence and immutable revisions | Accepted principles; database resolved by 0006 |
 | [0004](0004-background-processing.md) | Background experiment execution | Accepted direction; broker and recovery design proposed |
 | [0005](0005-experiment-reproducibility.md) | Reproducibility, examples and publication | Accepted principles; implementation details proposed |
-| [0006](0006-backend-stack.md) | Backend technology, PostgreSQL and Django upgrade policy | Django and persistence verified; DRF pending |
-| [0007](0007-identity-and-authentication.md) | Custom identity, public registration and session authentication | Authentication in implementation |
-| [0008](0008-rest-api.md) | RESTful API, OpenAPI and same-origin routing | Accepted; implementation pending |
+| [0006](0006-backend-stack.md) | Backend technology, PostgreSQL and Django upgrade policy | Django and persistence verified; DRF in implementation |
+| [0007](0007-identity-and-authentication.md) | Custom identity, public registration and session authentication | Authentication verified in #12 |
+| [0008](0008-rest-api.md) | RESTful API, OpenAPI and same-origin routing | API foundations in implementation |
 | [0009](0009-secrets-and-database-access.md) | Secret isolation and PostgreSQL role separation | Local/CI provisioning verified; production roles pending |
 
 Acceptance refers to the architectural direction established during project

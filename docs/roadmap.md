@@ -53,7 +53,8 @@ See the [changelog](../CHANGELOG.md) for the foundation release record.
 
 **Status:** in progress; architecture selected; Django initialized; PostgreSQL
 persistence verified and merged in [#11](https://github.com/AlessVolpe/FantacalcioDummySystem/pull/11).
-Authentication is in implementation (PR 4).
+Authentication verified and merged in [#12](https://github.com/AlessVolpe/FantacalcioDummySystem/pull/12).
+REST API foundations are in implementation (PR 5).
 
 | PR (milestone sequence) | Deliverable | Acceptance criteria |
 | --- | --- | --- |
