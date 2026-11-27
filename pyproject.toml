@@ -11,6 +11,8 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "django>=5.2,<5.3",
+    "djangorestframework>=3.18.3,<3.19",
+    "drf-spectacular[sidecar]>=0.30,<0.31",
     "psycopg[binary]>=3.2,<4",
 ]
 
@@ -22,6 +24,7 @@ dev = [
     "pytest-cov>=6,<8",
     "pre-commit>=4.2,<5",
     "django-stubs[compatible-mypy]>=6.1.2,<6.2",
+    "djangorestframework-stubs>=3.18.2,<3.19",
     "pytest-django>=4.13,<5",
 ]
 
@@ -56,10 +59,14 @@ line-ending = "lf"
 [tool.mypy]
 python_version = "3.13"
 files = ["src", "scripts", "tests", "manage.py"]
-plugins = ["mypy_django_plugin.main"]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
 strict = true
 warn_unreachable = true
 show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = ["drf_spectacular", "drf_spectacular.*"]
+ignore_missing_imports = true
 
 [tool.django-stubs]
 django_settings_module = "fantacalciodummysystem.config.settings.static"

@@ -14,6 +14,9 @@ from django.middleware.csrf import get_token
 from django.shortcuts import render
 from django.views.csrf import csrf_failure as default_csrf_failure
 
+from fantacalciodummysystem.api.parsers import reject_constant, unique_object
+from fantacalciodummysystem.api.problems import is_api, problem
+
 from . import lifecycle
 from .managers import canonical_email, validate_identity_email
 from .models import User
@@ -23,7 +26,7 @@ type View = Callable[[HttpRequest], HttpResponse]
 
 
 def error(code: str, status: int) -> JsonResponse:
-    return JsonResponse({"error": {"code": code}}, status=status)
+    return problem(code, status)
 
 
 def accepted() -> JsonResponse:
@@ -53,7 +56,7 @@ def endpoint(method: str) -> Callable[[View], View]:
 
 
 def csrf_failure(request: HttpRequest, reason: str = "") -> HttpResponse:
-    if request.path.startswith("/api/v1/auth/"):
+    if is_api(request):
         response = error("csrf_failed", 403)
         response["Cache-Control"] = "no-store"
         return response
@@ -63,7 +66,11 @@ def csrf_failure(request: HttpRequest, reason: str = "") -> HttpResponse:
 def payload(request: HttpRequest, *fields: str) -> dict[str, str]:
     if request.content_type != "application/json" or len(request.body) > 16384:
         raise ValueError("Invalid request body")
-    data = json.loads(request.body.decode("utf-8"))
+    data = json.loads(
+        request.body.decode("utf-8"),
+        object_pairs_hook=unique_object,
+        parse_constant=reject_constant,
+    )
     if not isinstance(data, dict) or set(data) != set(fields):
         raise ValueError("Invalid request fields")
     result: dict[str, str] = {}

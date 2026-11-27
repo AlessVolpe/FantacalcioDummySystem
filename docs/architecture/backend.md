@@ -1,8 +1,8 @@
 # Backend foundations
 
 **Status:** Django initialization, secret isolation and PostgreSQL persistence
-verified in 0.2.0. Authentication is in implementation; general REST infrastructure
-remains pending. See the [authentication reference](authentication.md).
+verified in 0.2.0. Authentication is verified; REST API foundations are in
+implementation. See [authentication](authentication.md) and [REST API](rest-api.md).
 
 See [ADR 0006](../adr/0006-backend-stack.md),
 [ADR 0007](../adr/0007-identity-and-authentication.md),
@@ -93,7 +93,8 @@ activation is independent of verification. The verified-email backend rejects
 inactive and unverified users; the trusted `createsuperuser` command marks its
 administrator verified. PR 4 introduces the email-first authentication lifecycle,
 restricted Django admin and versioned JSON endpoints; manager creation remains
-trusted internal code. General REST infrastructure belongs to PR 5.
+trusted internal code. PR 5 adds DRF resources, RFC 9457 errors, OpenAPI 3.1,
+health probes and own display-name editing without rewriting authentication.
 
 The initial identity policy trims and lowercases ASCII addresses (maximum 254
 characters); internationalized domains can use their ASCII A-label form.

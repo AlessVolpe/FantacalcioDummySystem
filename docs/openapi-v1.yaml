@@ -1,0 +1,798 @@
+openapi: 3.1.0
+info:
+  title: Fantacalcio Dummy System API
+  version: 1.0.0
+  description: Versioned application HTTP contract. Same-origin session authentication.
+paths:
+  /api/v1/auth/csrf/:
+    get:
+      operationId: authCsrf
+      summary: Obtain a CSRF token
+      tags:
+      - Authentication
+      security: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  csrfToken:
+                    type: string
+                required:
+                - csrfToken
+                additionalProperties: false
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /api/v1/auth/login/:
+    post:
+      operationId: authLogin
+      summary: Establish a session
+      tags:
+      - Authentication
+      security:
+      - csrfToken: []
+      responses:
+        '204':
+          description: Successful response
+        '400':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '403':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+                password:
+                  type: string
+                  minLength: 1
+                  maxLength: 128
+                  writeOnly: true
+              required:
+              - email
+              - password
+              additionalProperties: false
+  /api/v1/auth/logout/:
+    post:
+      operationId: authLogout
+      summary: Terminate the current session
+      tags:
+      - Authentication
+      security:
+      - csrfToken: []
+      responses:
+        '204':
+          description: Successful response
+        '403':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /api/v1/auth/me/:
+    get:
+      operationId: authMe
+      summary: Read the current account
+      tags:
+      - Authentication
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnIdentity'
+        '403':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    patch:
+      operationId: authUpdateMe
+      summary: Change the current display name
+      tags:
+      - Authentication
+      security:
+      - cookieAuth: []
+        csrfToken: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnIdentity'
+        '400':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '403':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '406':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '413':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '415':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                display_name:
+                  type: string
+                  minLength: 1
+                  maxLength: 150
+              required:
+              - display_name
+              additionalProperties: false
+  /api/v1/auth/password/change/:
+    post:
+      operationId: authPasswordChange
+      summary: Change the authenticated password
+      tags:
+      - Authentication
+      security:
+      - cookieAuth: []
+        csrfToken: []
+      responses:
+        '204':
+          description: Successful response
+        '400':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '403':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_password:
+                  type: string
+                  minLength: 1
+                  maxLength: 128
+                  writeOnly: true
+                password:
+                  type: string
+                  minLength: 12
+                  maxLength: 128
+                  writeOnly: true
+              required:
+              - current_password
+              - password
+              additionalProperties: false
+  /api/v1/auth/password/confirm/:
+    post:
+      operationId: authResetConfirm
+      summary: Complete password recovery
+      tags:
+      - Authentication
+      security:
+      - csrfToken: []
+      responses:
+        '204':
+          description: Successful response
+        '400':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '403':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  pattern: ^[A-Za-z0-9_-]{43}$
+                  writeOnly: true
+                password:
+                  type: string
+                  minLength: 12
+                  maxLength: 128
+                  writeOnly: true
+              required:
+              - token
+              - password
+              additionalProperties: false
+  /api/v1/auth/password/reset/:
+    post:
+      operationId: authResetRequest
+      summary: Request password recovery
+      tags:
+      - Authentication
+      security:
+      - csrfToken: []
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: accepted
+                required:
+                - status
+                additionalProperties: false
+        '400':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '403':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+              required:
+              - email
+              additionalProperties: false
+  /api/v1/auth/register/:
+    post:
+      operationId: authRegister
+      summary: Request a registration email
+      tags:
+      - Authentication
+      security:
+      - csrfToken: []
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: accepted
+                required:
+                - status
+                additionalProperties: false
+        '400':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '403':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+              required:
+              - email
+              additionalProperties: false
+  /api/v1/auth/resend/:
+    post:
+      operationId: authResend
+      summary: Resend a registration email
+      tags:
+      - Authentication
+      security:
+      - csrfToken: []
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: accepted
+                required:
+                - status
+                additionalProperties: false
+        '400':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '403':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+              required:
+              - email
+              additionalProperties: false
+  /api/v1/auth/verify/:
+    post:
+      operationId: authVerify
+      summary: Complete email-first registration
+      tags:
+      - Authentication
+      security:
+      - csrfToken: []
+      responses:
+        '201':
+          description: Successful response
+        '400':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '403':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  pattern: ^[A-Za-z0-9_-]{43}$
+                  writeOnly: true
+                display_name:
+                  type: string
+                  minLength: 1
+                  maxLength: 150
+                password:
+                  type: string
+                  minLength: 12
+                  maxLength: 128
+                  writeOnly: true
+              required:
+              - token
+              - display_name
+              - password
+              additionalProperties: false
+  /api/v1/health/live/:
+    get:
+      operationId: healthLive
+      summary: Application liveness
+      tags:
+      - Health
+      security: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: ok
+                required:
+                - status
+                additionalProperties: false
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '406':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /api/v1/health/ready/:
+    get:
+      operationId: healthReady
+      summary: PostgreSQL readiness
+      tags:
+      - Health
+      security: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: ok
+                required:
+                - status
+                additionalProperties: false
+        '405':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '406':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Problem Details response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+components:
+  schemas:
+    Health:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+      - status
+    Problem:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - type
+      - title
+      - status
+      - detail
+      - code
+    OwnIdentity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+          readOnly: true
+        display_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+      required:
+      - id
+      - email
+      - display_name
+      additionalProperties: false
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    csrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRFToken
+      description: CSRF protection, not an authentication credential. Obtain a token
+        from GET /api/v1/auth/csrf/ and retain its cookie. Refresh after login. Swagger
+        UI supplies it automatically.

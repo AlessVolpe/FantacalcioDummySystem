@@ -1,7 +1,8 @@
 # Authentication and account lifecycle
 
-**Status:** implementation in the fourth PR of 0.2.0; acceptance requires
-local verification and both PostgreSQL CI jobs. See [ADR 0007](../adr/0007-identity-and-authentication.md).
+**Status:** verified locally and in Linux/Windows CI; merged in
+[#12](https://github.com/AlessVolpe/FantacalcioDummySystem/pull/12). PR 5 integrates
+the [REST API contract](rest-api.md). See [ADR 0007](../adr/0007-identity-and-authentication.md).
 
 ## Identity and registration
 
@@ -30,7 +31,7 @@ first, keep the session and CSRF cookies, and send `X-CSRFToken` with the return
 state; fetch a new token after login. POST bodies with fields are UTF-8 JSON
 objects with exactly the listed string fields; bodies are bounded at 16 KiB.
 No CORS exception or bearer authentication is introduced. Responses use
-`Cache-Control: no-store`; the general API error contract is deferred to PR 5.
+`Cache-Control: no-store`. PR 5 standardizes errors as RFC 9457 Problem Details.
 
 | Method | Route | JSON fields | Success |
 | --- | --- | --- | --- |
@@ -44,10 +45,13 @@ No CORS exception or bearer authentication is introduced. Responses use
 | POST | `password/confirm/` | `token`, `password` | 204 |
 | POST | `password/change/` | `current_password`, `password` | 204 |
 | GET | `me/` | — | 200, own `id`, `email`, `display_name` |
+| PATCH | `me/` | `display_name` | 200, updated own identity |
 
 Registration completion deliberately does not return the user UUID or a
 Location until the client authenticates. The identity resource is private.
-Errors have the form `{"error":{"code":"invalid_input"}}`. Invalid input or
+Errors use `application/problem+json` with `type`, `title`, `status`, `detail`
+and the stable `code` extension; the old nested `error` member is removed.
+Invalid input or
 invalid/expired tokens return 400, invalid credentials or missing authorization
 and CSRF failures return 403, disallowed methods return 405, throttled requests
 return 429, and disabled email flows return 503. Registration/resend/recovery
@@ -137,7 +141,8 @@ set `FDS_AUTH_EMAIL_ENABLED=1` and supply private environment variables:
 No actual provider is selected or tested here. TLS proxy handling, sender
 verification, email deliverability, retention and delivery/timing defenses need
 operational review. Account deletion, email changes, MFA and competition-level
-permissions remain out of scope. Display-name editing is planned for PR 5.
+permissions remain out of scope. PR 5 permits authenticated users to update
+only their own display name through `PATCH /api/v1/auth/me/`.
 
 ## Verification
 
