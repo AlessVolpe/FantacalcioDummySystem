@@ -20,8 +20,21 @@ IMAGE = "postgres:19.0"
 
 
 def run(*args: str, env: dict[str, str] | None = None) -> None:
-    # Do not forward subprocess output: provisioning errors can contain secrets.
-    subprocess.run(args, env=env, check=True, capture_output=True, timeout=300)
+    executable = Path(args[0]).name
+
+    print(f"Executing {executable}...", flush=True)
+
+    subprocess.run(
+        args,
+        env=env,
+        check=True,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        timeout=120,
+    )
+
+    print(f"{executable} completed.", flush=True)
 
 
 def windows_bin(temp: Path, name: str) -> str:
@@ -63,6 +76,8 @@ def start(temp: Path) -> None:
             "-o",
             f"-h 127.0.0.1 -p {PORT}",
             "-w",
+            "-t",
+            "60",
             "start",
         )
     elif sys.platform == "linux":
@@ -179,6 +194,8 @@ def main() -> int:
             print(f"SQLSTATE: {exc.sqlstate or 'unavailable'}")
         elif isinstance(exc, subprocess.CalledProcessError):
             print(f"Subprocess exit code: {exc.returncode}")
+        elif isinstance(exc, subprocess.TimeoutExpired):
+            print(f"Subprocess timed out after {exc.timeout} seconds")
         return 1
     return 0
 
