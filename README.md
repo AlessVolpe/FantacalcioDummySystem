@@ -35,7 +35,7 @@
 
 ---
 
-**Current development status:** the Django backend is initialized; database infrastructure and public features remain in development. The native engine is developed independently in [Central Ranking Dogma](https://github.com/AlessVolpe/CentralRankingDogma). The original Java implementation is preserved in [FantacalcioDummySystem-Deprecated](https://github.com/AlessVolpe/FantacalcioDummySystem-Deprecated). The architecture and application capabilities described below represent the intended direction of the rewrite, not an already operational web service.
+**Current development status:** the Django backend and PostgreSQL persistence are verified locally and in CI; authentication is in implementation. The native engine is developed independently in [Central Ranking Dogma](https://github.com/AlessVolpe/CentralRankingDogma). The original Java implementation is preserved in [FantacalcioDummySystem-Deprecated](https://github.com/AlessVolpe/FantacalcioDummySystem-Deprecated). The architecture and application capabilities described below represent the intended direction of the rewrite, not an already operational web service.
 
 ## The vision
 
@@ -103,8 +103,8 @@ Explore the [application architecture](docs/architecture/system.md), [logical mo
 | Project and dependency management | [uv](https://docs.astral.sh/uv/) | Configured |
 | Web backend | [Django 5.2 LTS](https://www.djangoproject.com/) | Initialized |
 | REST API | [Django REST Framework](https://www.django-rest-framework.org/), OpenAPI | Selected; implementation pending |
-| Persistence | [PostgreSQL](https://www.postgresql.org/) | Settings and driver configured; provisioning pending |
-| Browser authentication | Django sessions, CSRF protection | Selected; implementation pending |
+| Persistence | [PostgreSQL](https://www.postgresql.org/) | Verified locally and in Linux/Windows CI |
+| Browser authentication | Django sessions, CSRF protection | Implementation in PR 4 |
 | Web frontend | [React](https://react.dev/) and [TypeScript](https://www.typescriptlang.org/) | Planned |
 | Background processing | [Celery](https://docs.celeryq.dev/) | Planned |
 | Native simulation engine | [Central Ranking Dogma](https://github.com/AlessVolpe/CentralRankingDogma), ISO C11 | Available upstream; integration planned |
@@ -123,8 +123,9 @@ The repository foundations milestone is complete at version 0.1.1. The current i
 - [x] Document the target architecture, logical module boundaries and decision records.
 - [x] Select backend technologies, identity and REST API conventions.
 - [x] Initialize Django and the custom user model with its initial migration.
-- [ ] Verify PostgreSQL 19 persistence and migrations against a real database
+- [x] Verify PostgreSQL 19 persistence and migrations against a real database
   using the [integration suite](docs/local-postgresql.md#5-run-integration-tests).
+- [ ] Verify the [authentication lifecycle](docs/architecture/authentication.md) locally and in CI.
 - [ ] Finalize implementation-level data models and API contracts.
 - [ ] Implement competition management, authentication and historical data import.
 - [ ] Integrate `crd-json` and background experiment execution.

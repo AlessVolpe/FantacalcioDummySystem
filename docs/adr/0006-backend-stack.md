@@ -1,6 +1,7 @@
 # ADR 0006: Backend technology and persistence
 
-**Status:** Accepted 2026-11-24; implementation pending.
+**Status:** Accepted 2026-11-24; Django and PostgreSQL 19 verified in PRs 2–3;
+DRF and OpenAPI remain pending.
 
 ## Context
 

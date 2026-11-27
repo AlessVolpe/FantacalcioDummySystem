@@ -15,12 +15,15 @@ from scripts.provision_test_database import TEST_DATABASE_MARKER
 TEST_SETTINGS = "fantacalciodummysystem.config.settings.testing"
 # Only the current foundation schema is permitted in the dedicated database.
 EXPECTED_TABLES = {
+    "accounts_accounttoken",
+    "accounts_auththrottle",
     "accounts_user",
     "accounts_user_groups",
     "accounts_user_user_permissions",
     "auth_group",
     "auth_group_permissions",
     "auth_permission",
+    "django_admin_log",
     "django_content_type",
     "django_migrations",
     "django_session",
@@ -75,7 +78,14 @@ def django_db_setup(django_db_blocker: DjangoDbBlocker) -> Iterator[None]:
             if not tables <= EXPECTED_TABLES:
                 pytest.fail("Unexpected tables in the dedicated testing database")
             with connection.cursor() as cursor:
-                for table in ("accounts_user", "auth_group", "django_session"):
+                for table in (
+                    "accounts_user",
+                    "accounts_accounttoken",
+                    "accounts_auththrottle",
+                    "auth_group",
+                    "django_admin_log",
+                    "django_session",
+                ):
                     if table in tables:
                         quoted_table = connection.ops.quote_name(table)
                         cursor.execute(f"SELECT EXISTS (SELECT 1 FROM {quoted_table})")

@@ -1,6 +1,8 @@
 # ADR 0007: Identity and browser authentication
 
-**Status:** Accepted 2026-11-24; implementation pending.
+**Status:** Accepted 2026-11-24; authentication in implementation (PR 4).
+See the [authentication reference](../architecture/authentication.md) for the
+selected email-first flow, token, session, password and throttle contracts.
 
 ## Context
 

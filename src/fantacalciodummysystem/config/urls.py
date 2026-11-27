@@ -1,6 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
-from django.urls import URLPattern, URLResolver
+from django.urls import URLPattern, URLResolver, include, path
 
-# Public account and API routes are introduced in later milestone PRs.
-urlpatterns: list[URLPattern | URLResolver] = []
+from fantacalciodummysystem.accounts import views
+from fantacalciodummysystem.accounts.admin import site
+
+urlpatterns: list[URLPattern | URLResolver] = [
+    path("api/v1/auth/", include("fantacalciodummysystem.accounts.urls")),
+    path("auth/register/", views.registration_page),
+    path("auth/reset-password/", views.reset_page),
+    path("admin/", site.urls),
+]
