@@ -40,3 +40,27 @@ jobs:
         run: uv run --locked mypy
       - name: Regression tests and branch coverage
         run: uv run --locked pytest --cov --cov-report=term-missing
+      - name: Download verified PostgreSQL 19 Windows binaries
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          # Public SHA-256 checksum of the EDB 19.0-1 archive.
+          POSTGRES_ARCHIVE_SHA256: 'BC397F1E58F018E364262074C2E9D960F6169E7436892DBE6E73313D1BB201FF' # pragma: allowlist secret
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $archive = Join-Path $env:RUNNER_TEMP 'fds-pg.zip'
+          $url = 'https://get.enterprisedb.com/postgresql/postgresql-19.0-1-windows-x64-binaries.zip'
+          $expected = $env:POSTGRES_ARCHIVE_SHA256
+          Invoke-WebRequest -Uri $url -OutFile $archive
+          if ((Get-FileHash -Algorithm SHA256 $archive).Hash -ne $expected) {
+            throw 'PostgreSQL binary archive checksum mismatch'
+          }
+          Expand-Archive -LiteralPath $archive -DestinationPath (Join-Path $env:RUNNER_TEMP 'fds-pg')
+          Remove-Item -LiteralPath $archive
+      - name: Provision disposable PostgreSQL 19
+        run: uv run --locked python -m scripts.ci_postgres start
+      - name: PostgreSQL integration tests and migrations
+        run: uv run --locked pytest -m integration --ds=fantacalciodummysystem.config.settings.testing
+      - name: Stop disposable PostgreSQL
+        if: always()
+        run: uv run --locked python -m scripts.ci_postgres stop

@@ -1,6 +1,6 @@
 # Private local PostgreSQL setup
 
-Use either native PostgreSQL (target major version 18) or the supplied local
+Use either native PostgreSQL (target major version 19) or the supplied local
 Compose service. Both use the same Django settings and SQL provisioning
 procedure. Native PostgreSQL is not started by Compose. Run Python on the host
 with uv. Do not use a production instance or real competition data here.
@@ -84,6 +84,12 @@ is mounted as a Compose secret, not passed in a command-line argument. Local
 Docker administrators can still access the server and its mounted secret.
 Compose is a local service, not a production deployment.
 
+The PostgreSQL 19 Compose service uses a new named volume (`postgres19-data`).
+The old `postgres-data` volume is not migrated or deleted. For existing data,
+back up and restore into PostgreSQL 19 (or follow the upstream `pg_upgrade`
+procedure) before retiring the old volume. Do not point a 19 server at an 18
+data directory. A fresh service requires fresh role provisioning.
+
 Connect with psql from the host using the selected host port and bootstrap
 role, or use the container's psql:
 
@@ -100,8 +106,23 @@ intend to permanently delete its database volume.
 
 ## 3. Provision independent application roles and databases
 
-Run the following in the administrator's **psql** session, not in an ordinary
-shell. Choose the private names already recorded in the two environment files.
+For a new native or Compose cluster, run the interactive provisioning script
+from the repository root:
+
+```sh
+uv run --locked python -m scripts.provision_test_database
+```
+
+Enter the selected loopback port, bootstrap administrator credentials, and
+role/database names and passwords already recorded in the private environment
+files. The script creates new roles/databases only, revokes PUBLIC access and
+marks the testing database. It refuses existing names; if an error interrupts
+provisioning, inspect partially created objects before retrying. It never
+automatically drops or changes existing objects.
+
+Alternatively, run the following in the administrator's **psql** session, not
+in an ordinary shell. Choose the private names already recorded in the two
+environment files.
 Use simple lowercase identifiers (letters, digits, underscores; begin with a
 letter) and distinct names. PostgreSQL quotes identifiers through psql's
 `:"variable"` interpolation. `\password` prompts without putting a plaintext
@@ -121,6 +142,7 @@ CREATE DATABASE :"dev_db" OWNER :"dev_role";
 CREATE DATABASE :"test_db" OWNER :"test_role";
 REVOKE ALL ON DATABASE :"dev_db" FROM PUBLIC;
 REVOKE ALL ON DATABASE :"test_db" FROM PUBLIC;
+COMMENT ON DATABASE :"test_db" IS 'FDS disposable integration test database v1';
 \du
 \l
 \q
@@ -134,10 +156,14 @@ must be reviewed if using a shared cluster. This is one-time provisioning; do
 not rerun against existing roles blindly. Do not change unrelated data or
 roles.
 
-The test database is reserved for the next PR. Django normally creates a
-separate test database. The persistence PR must explicitly handle its lifecycle
-without granting unrestricted database creation on the native cluster; do not
-run database-dependent pytest tests until that design is implemented.
+The explicit pytest integration suite reuses the dedicated testing database
+without `CREATEDB`. It checks the database marker, restricted owner and expected
+schema, takes an advisory lock and applies migrations. Ordinary tests roll
+back; transactional tests flush application tables. Never mark a database
+containing important data as disposable. If the dedicated database was already
+provisioned in PR #9, inspect its identity, ownership and contents, then use
+only the `COMMENT ON DATABASE` statement above as administrator. Do not rerun
+creation commands or grant additional privileges.
 
 ## 4. Check private configuration and connectivity
 
@@ -172,7 +198,24 @@ uv run --locked --env-file .env.development python manage.py migrate --plan --se
 uv run --locked --env-file .env.development python manage.py migrate --settings=fantacalciodummysystem.config.settings.development
 ```
 
+## 5. Run integration tests
+
+```sh
+uv run --locked --env-file .env.testing pytest -m integration --ds=fantacalciodummysystem.config.settings.testing
+```
+
+The integration fixture runs migration drift checks and applies migrations after
+validating the target database. Default pytest and Git hooks remain database-free.
+Do not use `manage.py test`, `--reuse-db`, `--create-db`, or parallel workers for
+this workflow; the fixture manages the pre-provisioned database directly.
+Keep it dedicated to this suite; if interrupted, inspect and clean only the
+verified disposable database before rerunning. The fixture refuses unexpected
+tables and existing users, groups or sessions.
+
+CI uses PostgreSQL 19 in an ephemeral Linux container and a native temporary
+Windows cluster, with generated masked credentials. Both run the same suite;
+the automatic release workflow reuses these checks. Production migration/runtime
+privilege provisioning remains deferred to 0.9.0.
+
 Never run migrations against a database with existing important data during
-this phase. The next PR will make migration execution and constraint checks
-required against real PostgreSQL. Production deployment and privilege grants
-are deliberately not implemented yet.
+this phase.

@@ -1,8 +1,8 @@
 # Backend foundations
 
-**Status:** Django initialization and secret isolation in 0.2.0. Local
-PostgreSQL setup is documented; real-database CI, public authentication and
-REST endpoints remain pending.
+**Status:** Django initialization, secret isolation and PostgreSQL persistence
+infrastructure in 0.2.0. Public authentication and REST endpoints remain pending.
+Real-database verification is required before the persistence PR is merged.
 
 See [ADR 0006](../adr/0006-backend-stack.md),
 [ADR 0007](../adr/0007-identity-and-authentication.md),
@@ -82,9 +82,9 @@ are mandatory in each database-backed profile; no authentication defaults are
 available. Development additionally requires `FDS_DEV_SECRET_KEY`. Development
 and testing allow loopback database hosts only. See the
 [local PostgreSQL setup](../local-postgresql.md) for private environment files,
-native and Compose setup, role separation and verification. The next PR adds
-real database tests and disposable CI credentials. Never use production data
-or credentials for local or CI tests.
+native and Compose setup, role separation and verification. Integration tests
+use the marked dedicated database; CI provisions disposable credentials. Never
+use production data or credentials for local or CI tests.
 
 `AUTH_USER_MODEL = "accounts.User"` is set before the initial migration. The
 model uses a UUID primary key, unique canonical email, display name, verification
@@ -117,14 +117,12 @@ uv run --locked pytest --cov --cov-report=term-missing
 ```
 
 Only regenerate the lock when dependencies change; use `uv lock --check` on
-subsequent verification. The tests in this PR do not connect to a database.
-The migration is version-controlled but must be verified against PostgreSQL
-before applying it to real data. In the persistence PR, run
-`manage.py makemigrations --check --dry-run`, `manage.py migrate` and the real
-PostgreSQL tests using the documented local database. Do not initialize Django's
-built-in default user table first. CI and release quality jobs remain
-database-free until provisioning is available on both platforms; the security
-workflow also scans tracked files for secrets.
+subsequent verification. Default pytest remains database-free. For integration
+verification, follow the [dedicated database instructions](../local-postgresql.md#5-run-integration-tests).
+The fixture validates the marked restricted database before checking migration
+drift and applying migrations. CI and reusable release quality jobs run this
+suite on Linux and Windows. The security workflow also scans tracked files
+for secrets.
 
 ## Deployment boundary
 
@@ -149,13 +147,12 @@ cookie and CSRF configuration must match the actual deployment.
 Keep pure Python tests separate from tests that need Django or PostgreSQL.
 Run fresh migrations and migration-drift checks against a real PostgreSQL
 instance; test uniqueness, transactions and account lifecycle behavior there.
-CI must continue to exercise Python on Linux and Windows. Provision PostgreSQL
-on both runner platforms by a supported mechanism (GitHub service containers
-are not the Windows solution); do not silently substitute SQLite. Update the
-reusable release verification path together with CI when database tests are
-introduced. Document local setup and teardown commands before introducing
-required database checks. Use Django system checks, strict typing and OpenAPI
-schema validation alongside the existing quality/security workflows.
+CI exercises Python on Linux and Windows with PostgreSQL 19, using a Linux
+container and native Windows binaries with a checked SHA-256. No SQLite
+substitution is supported. The existing reusable CI interface includes database
+verification in release quality jobs. Use Django system checks, strict typing
+and (in the API phase) OpenAPI schema validation alongside quality/security
+workflows.
 
 Celery, Redis, native execution, competition models and React remain out of
 scope until their planned implementation milestones.

@@ -69,7 +69,8 @@ minversion = "8.3"
 DJANGO_SETTINGS_MODULE = "fantacalciodummysystem.config.settings.static"
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = ["-ra", "--strict-config", "--strict-markers", "--import-mode=importlib"]
+addopts = ["-ra", "--strict-config", "--strict-markers", "--import-mode=importlib", "-m", "not integration"]
+markers = ["integration: requires a dedicated PostgreSQL testing database"]
 
 [tool.coverage.run]
 branch = true

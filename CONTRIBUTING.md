@@ -17,9 +17,10 @@ Participation is subject to the [Code of Conduct](CODE_OF_CONDUCT.md).
 5. Open a pull request against `main`, describing the motivation, verification,
    limitations and any compatibility or migration implications.
 
-The Django project is initialized; the public application and PostgreSQL
-integration verification remains pending. See [local PostgreSQL setup](docs/local-postgresql.md)
-for native and Compose setup. Local quality checks are configured.
+The Django project is initialized; the public application remains pending.
+See [local PostgreSQL setup](docs/local-postgresql.md) for native and Compose
+setup, provisioning and explicit integration testing. Local quality checks
+and Git hooks remain database-free.
 GitHub Actions verifies the same checks on Linux and Windows. Avoid unrelated
 reformatting or generated files.
 
@@ -27,7 +28,8 @@ reformatting or generated files.
 
 The `dev` dependency group contains Ruff, mypy, pytest, pytest-cov, pre-commit,
 pytest-django and django-stubs. See the [backend reference](docs/architecture/backend.md#django-initialization)
-for database-free checks and the pending real-database verification.
+for database-free checks and real-database verification. CI and release quality
+jobs also require the PostgreSQL integration suite on both platforms.
 `uv sync --locked` installs this group by default. To install only runtime
 dependencies, use `uv sync --locked --no-dev`.
 
