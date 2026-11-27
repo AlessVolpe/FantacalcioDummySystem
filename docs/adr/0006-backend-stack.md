@@ -14,8 +14,8 @@ must establish a testable platform before competition models are introduced.
   5.2 LTS with current security and bug-fix patches, Django REST Framework (DRF)
   and OpenAPI for the versioned HTTP API.
 - Use PostgreSQL in local development, database integration tests and production;
-  SQLite is not a supported substitute. Start with PostgreSQL 18 and Psycopg 3
-  as the implementation targets, subject to compatibility verification.
+  SQLite is not a supported substitute. PostgreSQL 19 supersedes the original
+  PostgreSQL 18 target; retain Psycopg 3. Verify compatibility in CI.
 - Support native PostgreSQL and Docker Compose equally for local development;
   run Python on the host using uv. CI provisions an isolated PostgreSQL instance
   for database tests on each supported runner, not necessarily using the same

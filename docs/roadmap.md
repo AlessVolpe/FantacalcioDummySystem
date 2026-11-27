@@ -51,7 +51,8 @@ See the [changelog](../CHANGELOG.md) for the foundation release record.
 
 ## 0.2.0: Backend foundations
 
-**Status:** in progress; architecture selected; Django initialization introduced.
+**Status:** in progress; architecture selected; Django initialized; PostgreSQL
+persistence implementation and verification in PR 3.
 
 | PR (milestone sequence) | Deliverable | Acceptance criteria |
 | --- | --- | --- |

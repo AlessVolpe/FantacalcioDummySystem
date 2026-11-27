@@ -1,7 +1,7 @@
 # Local PostgreSQL only. Python runs on the host.
 services:
   postgres:
-    image: postgres:18
+    image: postgres:19
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?Set the private bootstrap role}
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_admin_password
@@ -12,11 +12,11 @@ services:
     ports:
       - "127.0.0.1:${FDS_POSTGRES_PORT:?Set the private local port}:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql
+      - postgres19-data:/var/lib/postgresql
 
 secrets:
   postgres_admin_password:
     file: ./secrets/postgres-admin-password
 
 volumes:
-  postgres-data:
+  postgres19-data:

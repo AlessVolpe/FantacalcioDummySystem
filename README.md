@@ -123,7 +123,8 @@ The repository foundations milestone is complete at version 0.1.1. The current i
 - [x] Document the target architecture, logical module boundaries and decision records.
 - [x] Select backend technologies, identity and REST API conventions.
 - [x] Initialize Django and the custom user model with its initial migration.
-- [ ] Provision PostgreSQL and verify migrations against a real database.
+- [ ] Verify PostgreSQL 19 persistence and migrations against a real database
+  using the [integration suite](docs/local-postgresql.md#5-run-integration-tests).
 - [ ] Finalize implementation-level data models and API contracts.
 - [ ] Implement competition management, authentication and historical data import.
 - [ ] Integrate `crd-json` and background experiment execution.

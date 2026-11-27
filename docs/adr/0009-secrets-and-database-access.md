@@ -26,9 +26,10 @@ unit tests must remain usable without access to any private database.
   uses the bootstrap or PostgreSQL administrator role.
 - Development and testing roles are independent and own only their dedicated
   databases. Neither has superuser, role-creation, replication or database-
-  creation privileges. In the persistence PR, choose a test database lifecycle
-  compatible with that restriction, or grant creation only on an isolated
-  disposable test cluster. Never let a test runner use production data.
+  creation privileges. Use an explicitly marked, pre-provisioned test database
+  with a restricted owner. The integration suite migrates it in place and
+  never creates or drops databases. CI creates a fresh isolated cluster per
+  job with the same restricted application role. Never use production data.
 - Production migrations use a separate controlled migration role. The runtime
   role has only the database/schema access and DML needed by the application,
   not ownership or schema modification. Grant future object privileges using
